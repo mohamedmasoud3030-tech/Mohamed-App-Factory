@@ -29,8 +29,11 @@ If your harness does **not** auto-discover skills:
 
 ## Validating skills
 
-- **Tier 0 (structure):** `skills-ref validate .agents/skills/<name>` — checks
-  frontmatter validity and naming. Run when adding or editing a skill.
+- **Tier 0 (structure):** use the `skills-ref` reference implementation from
+  `agentskills/agentskills`, or another validator whose source and version are
+  recorded — do not treat an unverified third-party package as the official
+  validator. `skills-ref validate .agents/skills/<name>` checks frontmatter
+  validity and naming. Run when adding or editing a skill.
 - **Tier 1 (behavior):** for each behavioral skill, run 1–3 realistic prompts
   in a fresh agent context; verify expected activation and observable
   behavior; where feasible, include one baseline run without the skill.

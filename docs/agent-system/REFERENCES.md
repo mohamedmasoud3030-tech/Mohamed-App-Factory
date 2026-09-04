@@ -16,8 +16,14 @@ For each borrowed material, classify it as:
 - **Source:** https://github.com/agentskills/agentskills
 - **License:** code Apache-2.0; documentation CC-BY-4.0.
 - **Used for:** the Agent Skills format — `SKILL.md` frontmatter, progressive
-  disclosure, naming and description constraints — and structural validation
-  (`skills-ref validate`). **ADOPT** (the format is normative for our skills).
+  disclosure, naming and description constraints. **ADOPT** (the format is
+  normative for our skills).
+- **Validation tooling:** the repository ships a `skills-ref` reference
+  implementation (Python, version 0.1.0, Apache-2.0), explicitly described by
+  its authors as intended for demonstration purposes, not for production. Use
+  it, or another validator whose source and version are recorded. The npm
+  package `skills-ref` (v0.1.5) is a third-party CLI, not the upstream
+  reference implementation.
 
 ## anthropics/skills
 

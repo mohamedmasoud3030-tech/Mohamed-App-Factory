@@ -44,15 +44,20 @@ architectural truth.
 5. Unresolved consequential choice → STOP and surface it with the trade-offs
    and a recommendation; wait for a decision. Do not silently pick.
 6. Approved consequential change → draft a superseding ADR in `docs/adr/`
-   following the existing format, set "Supersedes: ADR-XXXX", add it to the
-   `docs/DECISIONS.md` index, and mark the superseded ADR "Superseded by
-   ADR-XXXX".
+   following the existing format. Declare `Supersedes: ADR-XXXX` in the new
+   ADR. Update `docs/DECISIONS.md` so the index reflects the superseded status
+   and link. Leave the superseded ADR file byte-for-byte unchanged — accepted
+   ADRs are never edited, not even to add a status marker. (If metadata-only
+   edits to accepted ADRs ever become desirable, that must first be an
+   explicit governance decision — do not introduce the exception through this
+   skill.)
 
 ## Required evidence / output
 
 - The list of ADRs consulted, or a surfaced conflict / decision request as
   above.
-- For a new ADR: the record file, the index update, and the supersede link.
+- For a new ADR: the new record file with its `Supersedes` field, and the
+  updated `docs/DECISIONS.md` index.
 
 ## Exit criteria
 

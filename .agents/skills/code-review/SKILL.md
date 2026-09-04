@@ -59,8 +59,12 @@ any completion claim, apply that skill. Do not restate its checklist here.
 
 ## Exit criteria
 
-- Critical issues fixed; Important issues fixed or explicitly deferred with a
-  reason; a verdict recorded.
+- **Critical** findings are fixed before the change is ready.
+- **Important** findings are fixed before the change is ready, unless an
+  authorized owner explicitly accepts the deferral. A reason alone is not
+  authorization.
+- **Minor** findings may be deferred with rationale.
+- A verdict is recorded.
 
 ## References
 

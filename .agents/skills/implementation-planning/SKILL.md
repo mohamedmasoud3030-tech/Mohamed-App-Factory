@@ -28,8 +28,10 @@ writing code. Adapted from `obra/superpowers` `writing-plans`; vendor-neutral.
    and consider mature libraries, before building. Respect the small-change,
    YAGNI, and reuse rules in `AGENTS.md`.
 2. List concrete steps. Each step is one action ending in an independently
-   testable result: write the failing test → run it to fail → implement the
-   minimal code → run it to pass → commit. Follow `test-driven-development`.
+   testable result: write the failing test → verify RED → implement the
+   minimal code → verify GREEN → refactor where needed. Follow
+   `test-driven-development`. Commit granularity follows the repository/user
+   workflow, not the TDD cycle.
 3. For each step give: files to create or modify, and the expected result. No
    placeholders — no "TBD", no "add error handling", no vague steps.
 4. State explicitly what is OUT of scope (what you are not building).
