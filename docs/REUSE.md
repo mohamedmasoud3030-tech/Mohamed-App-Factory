@@ -36,12 +36,14 @@ not a company asset) and `Test` (457-line experiment with tracked ZIPs).
 
 ## Not yet extracted (next phases, in order)
 
-1. DB layer per engine: Drizzle schemas + RLS migrations — adapting
-   `bug-free-garbanzo/db/migrations/0002-0005` and `starting` migration 0079
-   (delegated permissions), executed as the runtime (non-owner) DB role.
+1. ~~DB layer per engine~~ — DONE (wave 2): Drizzle schemas +
+   `engines/db/migrations/0001_nile_engines.sql` (RLS, per-tenant uniques),
+   patterns from `bug-free-garbanzo/db/migrations/0002-0005`; proven by
+   PGlite RLS tests running as a non-superuser runtime role. Delegated
+   permissions from `starting` migration 0079 remain for the API phase.
 2. Auth: Better Auth + Organization plugin per ADR-0005, seeded demo accounts
-   (`demo1234`) + daily demo-data reset job.
-3. API contracts: REST/OpenAPI via NestJS (ADR-0006); `platform` repo's
+   (spec in `engines/platform/src/demo-seed.ts`) + daily demo-data reset job.
+3. API service: REST/OpenAPI via NestJS (ADR-0001/0006); `platform` repo's
    `lib/api-zod` + `tools/verify-*` + `pnpm-workspace.yaml` supply-chain
    hardening when the workspace moves to Nx + pnpm (ADR-0001).
 4. UI shells per system (POS first) on top of these engines — screens last.

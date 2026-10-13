@@ -4,3 +4,4 @@ export * from './branding.js';
 export * from './locale/arabic.js';
 export * from './locale/dates.js';
 export * from './locale/phone.js';
+export * from './demo-seed.js';
