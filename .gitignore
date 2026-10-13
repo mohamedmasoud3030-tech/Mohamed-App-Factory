@@ -1,0 +1,18 @@
+# بيانات التشغيل المحلية (تُولَّد تلقائياً من البذور)
+prototypes/*/data/db.json
+prototypes/*/data/*.json
+
+# سجلات وملفات مؤقتة
+*.log
+.DS_Store
+Thumbs.db
+
+# تبعيات (عند إدخال pnpm/Nx لاحقاً حسب ADR-0001)
+node_modules/
+dist/
+.nx/
+.pnpm-store/
+
+# نسخ احتياطية محلية
+*.tar.gz
+!docs/**/*.tar.gz
