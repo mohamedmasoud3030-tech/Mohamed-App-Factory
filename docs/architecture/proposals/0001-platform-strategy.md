@@ -720,33 +720,42 @@ built "for later" is a liability until proven otherwise.
 
 ## 13. Open decisions
 
-| ID | Decision | Owner | Blocking | Recommendation |
-| --- | --- | --- | --- | --- |
-| **D-1** | Tenant/deployment model: single-tenant per customer, or multi-tenant shared database with row-level security, or schema-per-tenant | Mohamed (business) + ChatGPT + Arena | **Milestone 0** | Multi-tenant-capable data model (`tenant_id` everywhere + RLS) with deployment flexibility; decide commercially, build for it structurally |
-| **D-2** | Language and stack (section 11) | Mohamed + ChatGPT + Arena | **Milestone 0** | TypeScript + PostgreSQL as recommended |
-| **D-3** | Which application is genuinely first, judged by real user pressure | **Mohamed** | **Milestone 0** | Property & rental — narrower domain, and it exercises the hardest shared pillars (recurrence, money, documents, periods) |
-| **D-4** | End-user languages: English only, or Arabic + English with RTL | **Mohamed** | **Milestone 0** | Decide before the first screen; RTL cannot be retrofitted cheaply |
-| **D-5** | Authentication: library vs dedicated identity provider; is corporate SSO (SAML/OIDC) ever required? | Mohamed + Arena | Milestone 0 | Library behind a port; keep the escape hatch |
-| **D-6** | Hosting target and deployment topology | Arena + Mohamed | Milestone 0 | Decide jointly; keep it boring (one managed Postgres, one container host) |
-| **D-7** | First country's tax/invoice rules (VAT, e-invoicing, retention) | Mohamed (business) | Milestone 1 | One country done properly, as a jurisdiction module |
-| **D-8** | Build-versus-adopt for the whole platform (C1) | Mohamed | Before Milestone 1 | Build, with reasons recorded in ADR-0001 |
+> **Status update — 2026-10-13.** Answers received from Mohamed, and one decision added. See
+> [proposal 0002](0002-open-source-reuse-audit.md) for the audit that now gates the first application,
+> and [`docs/adr/`](../../adr/) for decisions that have been formally accepted.
+
+| ID | Decision | Owner | Status | Blocking | Recommendation |
+| --- | --- | --- | --- | --- | --- |
+| **D-1** | Tenant/deployment model: single-tenant per customer, multi-tenant with row-level security, or schema-per-tenant | Mohamed (business) + ChatGPT + Arena | **Open** — build tenant-aware by default so no path closes | Milestone 0 | Multi-tenant-capable data model (`tenant_id` everywhere + RLS), deployment flexibility retained; decide commercially, build for it structurally |
+| **D-2** | Language and stack (section 11) | Mohamed + ChatGPT + Arena | **Deferred** — written comparison + ADR required first | Milestone 0 | TypeScript + PostgreSQL, revised by the audit's RTL finding (see proposal 0002 §5.1) |
+| **D-3** | Which application is genuinely first, judged by real user pressure | **Mohamed** | **Deferred** — gated on the open-source reuse audit and on customer access | Milestone 0 | Property & rental (proposal 0002 §10), conditional on having reachable customers in that domain |
+| **D-4** | End-user languages | **Mohamed** | ✅ **Decided** | — | **Arabic + RTL are first-class requirements.** Recorded as [ADR-0001](../../adr/0001-localization-arabic-rtl-first.md) |
+| **D-5** | Authentication: library vs dedicated identity provider; is corporate SSO (SAML/OIDC) ever required? | Mohamed + Arena | Open | Milestone 0 | Library behind a port (Better Auth evaluated in proposal 0002 §5); keep the escape hatch |
+| **D-6** | Hosting target and deployment topology | Arena + Mohamed | Open | Milestone 0 | Decide jointly; keep it boring (one managed Postgres, one container host) |
+| **D-7** | First country's tax/invoice rules (VAT, e-invoicing, retention) | Mohamed (business) | Partially known — Egypt: ETA e-invoicing mandatory, 14% VAT, Arabic mandatory on tax invoices | Milestone 1 | One country done properly, as a jurisdiction module |
+| **D-8** | Build-versus-adopt for the whole platform (C1) | Mohamed | **Audited** — awaiting review | Before Milestone 1 | Build custom on permissively-licensed components; buy ETA compliance (proposal 0002 §1, §9) |
+| **D-9** | Product business vs. internal automation for Mohamed's own companies | **Mohamed** | **Open — highest impact** | Everything | If internal: adopt ERPNext/Odoo and stop building (proposal 0002 §10.3) |
 
 ---
 
 ## 14. ADRs this proposal should produce
 
-To be written into `docs/adr/` once the corresponding decision is confirmed:
+ADRs are numbered **when they are accepted**, in order — a decision proposed in this document is not a
+decision until it appears in [`docs/adr/`](../../adr/). The candidate decisions below are the ones I expect
+this proposal to generate; the numbering will be assigned at acceptance. See
+[`docs/adr/README.md`](../../adr/README.md) for the current index.
 
-- `0001` — Build a custom factory instead of adopting an existing ERP platform
-- `0002` — Single monorepo, modular monolith, one deployable per application
-- `0003` — TypeScript end-to-end with PostgreSQL (replaces stacking decisions if rejected)
-- `0004` — Tenant isolation strategy
-- `0005` — Money representation: integer minor units, currency-aware, no floats
-- `0006` — Double-entry accounting kernel built in-house, isolated behind adapters
-- `0007` — Authorization model: RBAC with resource scoping behind a single `can()` chokepoint
-- `0008` — Module boundaries and dependency rules, machine-enforced in CI
-- `0009` — Reuse policy: generalize at the second consumer; module status markers
-- `0010` — Document generation: HTML/CSS to PDF via headless Chromium, versioned templates
+- Build a custom factory instead of adopting an existing ERP platform *(now informed by proposal 0002)*
+- Single monorepo, modular monolith, one deployable per application
+- TypeScript end-to-end with PostgreSQL *(revised by the RTL requirement — see proposal 0002 §5.1)*
+- Tenant isolation strategy
+- Money representation: integer minor units, currency-aware, no floats
+- Double-entry accounting kernel built in-house, isolated behind adapters
+- Authorization model: RBAC with resource scoping behind a single `can()` chokepoint
+- Module boundaries and dependency rules, machine-enforced in CI
+- Reuse policy: generalize at the second consumer; module status markers
+- Document generation: HTML/CSS to PDF via headless Chromium, versioned templates
+- Egyptian jurisdiction: ETA e-invoicing behind a provider port, VAT 14%, bilingual documents
 
 ---
 

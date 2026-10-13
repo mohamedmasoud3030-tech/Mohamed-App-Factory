@@ -8,15 +8,23 @@ contracts, and procedures live here — not in chat conversations.
 
 ## Current status
 
-**Pre-implementation — architecture and planning.**
+**Pre-implementation — architecture and planning. No application code is written until the open decisions
+are resolved.**
 
 | Document | Purpose |
 | --- | --- |
-| [docs/architecture/proposals/0001-platform-strategy.md](docs/architecture/proposals/0001-platform-strategy.md) | Proposed platform strategy: repository architecture, module strategy, stack, first milestone (awaiting decisions) |
+| [docs/architecture/proposals/0001-platform-strategy.md](docs/architecture/proposals/0001-platform-strategy.md) | Platform strategy: repository architecture, module strategy, stack, first milestone, open decisions |
+| [docs/architecture/proposals/0002-open-source-reuse-audit.md](docs/architecture/proposals/0002-open-source-reuse-audit.md) | Adopt vs. integrate vs. build: licence analysis, candidate evaluation, and the recommendation for the first application |
+| [docs/adr/](docs/adr/) | Architecture Decision Records — the durable record of decisions actually made |
 
-The canonical documents (`AGENTS.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `MODULES.md`, `DECISIONS.md`,
-`CONTRIBUTING.md`) and the first implementation milestone will be created after the open decisions in
-the proposal are resolved.
+**Decided so far:** Arabic and RTL are first-class product requirements; English remains the repository
+language ([ADR-0001](docs/adr/0001-localization-arabic-rtl-first.md)).
+
+**Open, and blocking implementation:** whether the factory is a product for external customers or internal
+automation (proposal 0002 §10.3), the first application, tenant isolation, and the stack.
+
+The canonical documents (`AGENTS.md`, `ARCHITECTURE.md`, `PRODUCT.md`, `MODULES.md`, `CONTRIBUTING.md`)
+and the first implementation milestone will be created once those decisions are settled.
 
 ## Working language
 
