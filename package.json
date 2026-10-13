@@ -13,9 +13,12 @@
     "test:engines": "vitest run engines"
   },
   "dependencies": {
-    "decimal.js": "^10.4.3"
+    "decimal.js": "^10.4.3",
+    "drizzle-orm": "^0.45.4",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.9",
     "@types/node": "^22.10.0",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

@@ -7,3 +7,4 @@ export * from './regrade.js';
 export * from './money-minor.js';
 export * from './money-by-currency.js';
 export * from './money-bridge.js';
+export * from './contracts.js';
