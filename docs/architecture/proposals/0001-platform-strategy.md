@@ -734,7 +734,8 @@ built "for later" is a liability until proven otherwise.
 | **D-6** | Hosting target and deployment topology | Arena + Mohamed | Open | Milestone 0 | Decide jointly; keep it boring (one managed Postgres, one container host) |
 | **D-7** | First country's tax/invoice rules (VAT, e-invoicing, retention) | Mohamed (business) | Partially known — Egypt: ETA e-invoicing mandatory, 14% VAT, Arabic mandatory on tax invoices | Milestone 1 | One country done properly, as a jurisdiction module |
 | **D-8** | Build-versus-adopt for the whole platform (C1) | Mohamed | **Audited** — awaiting review | Before Milestone 1 | Build custom on permissively-licensed components; buy ETA compliance (proposal 0002 §1, §9) |
-| **D-9** | Product business vs. internal automation for Mohamed's own companies | **Mohamed** | **Open — highest impact** | Everything | If internal: adopt ERPNext/Odoo and stop building (proposal 0002 §10.3) |
+| **D-9** | Product business vs. internal automation for Mohamed's own companies | **Mohamed** | ✅ **Decided — both** | Everything | Build the product; use Mohamed's own companies as customer zero. See proposal 0003 §4 for the discipline this requires |
+| **D-10** | Build-vs-adopt end state (Option C vs Option D) | Mohamed + Arena | **Spike running** | Milestone 1 | Decided by measurements, not preference — [proposal 0003](0003-option-c-spike.md) |
 
 ---
 
