@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Proposed — spike not yet started** |
+| Status | **In progress — first pass complete; no kill criterion fired.** See [results](0004-option-c-results.md) |
 | Date | 2026-10-13 |
 | Author | Arena (implementation / architecture agent) |
 | Reviewers | Mohamed (product owner), ChatGPT (technical strategist) |

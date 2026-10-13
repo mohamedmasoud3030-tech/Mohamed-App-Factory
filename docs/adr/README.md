@@ -48,7 +48,7 @@ if it is deliberate.
 | ADR | Title | Status | Date |
 | --- | --- | --- | --- |
 | [0001](0001-localization-arabic-rtl-first.md) | Arabic and RTL are first-class requirements, English remains the repository language | Accepted | 2026-10-13 |
-| 0002 | Build vs. adopt: custom platform on permissively-licensed components | **Pending** — gated on the [Option C spike](../architecture/proposals/0003-option-c-spike.md) | — |
+| 0002 | Build vs. adopt: custom platform on permissively-licensed components | **Pending** — [spike](0003-option-c-spike.md) first pass done ([results](../architecture/proposals/0004-option-c-results.md)); no kill criterion fired; 4 measurements outstanding | — |
 | 0003 | First application and pilot domain | **Pending** — needs Mohamed's input (proposal 0003 §5) | — |
 | 0004 | Tenant isolation strategy | **Pending** — build tenant-aware by default in the meantime | — |
 

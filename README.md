@@ -16,6 +16,8 @@ are resolved.**
 | [docs/architecture/proposals/0001-platform-strategy.md](docs/architecture/proposals/0001-platform-strategy.md) | Platform strategy: repository architecture, module strategy, stack, first milestone, open decisions |
 | [docs/architecture/proposals/0002-open-source-reuse-audit.md](docs/architecture/proposals/0002-open-source-reuse-audit.md) | Adopt vs. integrate vs. build: licence analysis, candidate evaluation, first-application recommendation |
 | [docs/architecture/proposals/0003-option-c-spike.md](docs/architecture/proposals/0003-option-c-spike.md) | The adopted-ledger option: architecture, boundary rules, a 3-day spike with pass/fail measurements and kill criteria |
+| [docs/architecture/proposals/0004-option-c-results.md](docs/architecture/proposals/0004-option-c-results.md) | Measured spike results against a live Odoo Community instance — evidence, costs, and what remains unmeasured |
+| [tools/spikes/option-c/](tools/spikes/option-c/) | Reproducible probe scripts behind those measurements (throwaway evidence, not application code) |
 | [docs/adr/](docs/adr/) | Architecture Decision Records — the durable record of decisions actually made |
 
 **Decided so far:** Arabic and RTL are first-class product requirements while English remains the
