@@ -1,0 +1,23 @@
+{
+  "name": "mohamed-app-factory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Nile demo-platform — engines extracted from Mohamed's production codebases (see docs/REUSE.md). Stack per docs/adr/0001-0006.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:engines": "vitest run engines"
+  },
+  "dependencies": {
+    "decimal.js": "^10.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
