@@ -1,0 +1,3 @@
+V17 nile_app is a member of pg_execute_server_program -> startup ACCEPTED; OS command ran AS nile_app (no SET ROLE needed): true
+ALTER ROLE rv2_login_51ab13 IN DATABASE .. SET role = nile_app, NO startup option: current_user=nile_app session_user=rv2_login_51ab13; after RESET ROLE=nile_app; after DISCARD ALL=nile_app; after SET ROLE NONE=rv2_login_51ab13
+cleanup ok

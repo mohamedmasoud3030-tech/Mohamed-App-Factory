@@ -1,0 +1,42 @@
+PostgreSQL 18.4; G-7 under review @ 60342be (fresh-clone copy)
+control (baseline member login, no extra capability):
+   C1 column-level UPDATE grant (drizzle migrations log)          -> denied (42501: permission denied for schema drizzle)
+   C2 column-level SELECT grant (password hashes in "account")    -> denied (42501: permission denied for table account)
+   S1 sequence UPDATE grant                                       -> denied (42501: permission denied for schema drizzle)
+   F1 EXECUTE on a SECURITY DEFINER function (revoked from PUBLIC) -> denied (42501: permission denied for function purge_users)
+   F2 login owns a function in public                             -> denied (42501: permission denied for schema public)
+   T1 login owns a type in public                                 -> denied (42704: type "public.mood" does not exist)
+   M1 MAINTAIN grant on audit_log (PG17+): REINDEX                -> denied (42501: permission denied for table audit_log)
+   M2 member of pg_maintain                                       -> denied (42501: permission denied for table audit_log)
+   P1 member of pg_execute_server_program (OS command)            -> denied (42501: permission denied to COPY to or from an external progra)
+   P2 member of pg_write_server_files                             -> denied (42501: permission denied to COPY to a file)
+   P3 member of pg_read_server_files                              -> denied (42501: permission denied to COPY from a file)
+   P4 member of pg_signal_backend                                 -> denied (42501: permission denied to terminate process)
+   P5 member of pg_read_all_data (bypasses REVOKE, not RLS)       -> denied (42501: permission denied for schema drizzle)
+   R1 CREATEROLE attribute                                        -> denied (42501: permission denied to create role)
+   R2 CREATEDB attribute                                          -> denied (42501: permission denied to create database)
+   R3 REPLICATION attribute                                       -> denied (42501: permission denied to use replication slots)
+   G1 SET privilege on session_replication_role (PG15+)           -> denied (42501: permission denied to set parameter "session_replication)
+   U1 schema USAGE on drizzle only (no table grant)               -> denied (42501: permission denied for schema drizzle)
+   X1 TEMP on database (PUBLIC has it by default)                 -> SUCCEEDED (expected: PUBLIC default)
+vectors:
+   C1 column-level UPDATE grant (drizzle migrations log)          startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   C2 column-level SELECT grant (password hashes in "account")    startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   S1 sequence UPDATE grant                                       startup ACCEPTED | after SET ROLE NONE: SUCCEEDED {"setval":"999999"}
+   F1 EXECUTE on a SECURITY DEFINER function (revoked from PUBLIC) startup ACCEPTED | after SET ROLE NONE: SUCCEEDED {"purge_users":"0"}
+   F2 login owns a function in public                             startup ACCEPTED | after SET ROLE NONE: denied (42501: permission denied for schema public)
+   T1 login owns a type in public                                 startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   M1 MAINTAIN grant on audit_log (PG17+): REINDEX                startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   M2 member of pg_maintain                                       startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   P1 member of pg_execute_server_program (OS command)            startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   P2 member of pg_write_server_files                             startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   P3 member of pg_read_server_files                              startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   P4 member of pg_signal_backend                                 startup ACCEPTED | after SET ROLE NONE: SUCCEEDED {"pg_terminate_backend":true}
+   P5 member of pg_read_all_data (bypasses REVOKE, not RLS)       startup refused: runtime login "rv_l12_353b91" holds, or can gain, a privilege that "ni
+   R1 CREATEROLE attribute                                        startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   R2 CREATEDB attribute                                          startup ACCEPTED | after SET ROLE NONE: SUCCEEDED (CREATE DATABASE)
+   R3 REPLICATION attribute                                       startup ACCEPTED | after SET ROLE NONE: SUCCEEDED {"pg_create_physical_replication_slot":"(rv_slot_353b91,)"}
+   G1 SET privilege on session_replication_role (PG15+)           startup ACCEPTED | after SET ROLE NONE: SUCCEEDED
+   U1 schema USAGE on drizzle only (no table grant)               startup ACCEPTED | after SET ROLE NONE: denied (42501: permission denied for table __drizzle_migrations)
+P1 marker file created by COPY TO PROGRAM: true; P2 file written: true
+cleanup: leftover rv_ roles = 0

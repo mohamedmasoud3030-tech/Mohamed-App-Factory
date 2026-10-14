@@ -29,3 +29,6 @@ node_modules/
 .probe/
 .list.mts
 *.bundle
+
+# Evidence logs under tools/spikes are published on purpose (2026-10-14 handoff)
+!tools/spikes/**/artifacts/**/*.log

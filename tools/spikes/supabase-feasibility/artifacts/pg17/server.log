@@ -1,0 +1,152 @@
+2026-10-14 19:33:11.861 UTC [12342] LOG:  starting PostgreSQL 17.10 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, 64-bit
+2026-10-14 19:33:11.861 UTC [12342] LOG:  listening on IPv4 address "127.0.0.1", port 5517
+2026-10-14 19:33:11.861 UTC [12342] LOG:  listening on Unix socket "/tmp/supa-eval/.s.PGSQL.5517"
+2026-10-14 19:33:11.862 UTC [12345] LOG:  database system was shut down at 2026-10-14 19:33:11 UTC
+2026-10-14 19:33:11.864 UTC [12342] LOG:  database system is ready to accept connections
+2026-10-14 19:33:12.992 UTC [12392] ERROR:  permission denied to grant role "nile_app"
+2026-10-14 19:33:12.992 UTC [12392] DETAIL:  Only roles with the ADMIN option on role "nile_app" may grant this role.
+2026-10-14 19:33:12.992 UTC [12392] STATEMENT:  GRANT nile_app TO e0_login_a37e34
+2026-10-14 19:33:13.123 UTC [12399] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.130 UTC [12400] ERROR:  permission denied for table audit_log
+2026-10-14 19:33:13.130 UTC [12400] STATEMENT:  UPDATE "audit_log" SET tenant_id = tenant_id
+2026-10-14 19:33:13.132 UTC [12401] ERROR:  permission denied for table audit_log
+2026-10-14 19:33:13.132 UTC [12401] STATEMENT:  DELETE FROM "audit_log"
+2026-10-14 19:33:13.135 UTC [12402] ERROR:  permission denied for table sales_transactions
+2026-10-14 19:33:13.135 UTC [12402] STATEMENT:  UPDATE "sales_transactions" SET tenant_id = tenant_id
+2026-10-14 19:33:13.138 UTC [12403] ERROR:  permission denied for table sales_transactions
+2026-10-14 19:33:13.138 UTC [12403] STATEMENT:  DELETE FROM "sales_transactions"
+2026-10-14 19:33:13.141 UTC [12404] ERROR:  permission denied for table transaction_lines
+2026-10-14 19:33:13.141 UTC [12404] STATEMENT:  UPDATE "transaction_lines" SET tenant_id = tenant_id
+2026-10-14 19:33:13.143 UTC [12405] ERROR:  permission denied for table transaction_lines
+2026-10-14 19:33:13.143 UTC [12405] STATEMENT:  DELETE FROM "transaction_lines"
+2026-10-14 19:33:13.146 UTC [12406] ERROR:  permission denied for table stock_movements
+2026-10-14 19:33:13.146 UTC [12406] STATEMENT:  UPDATE "stock_movements" SET tenant_id = tenant_id
+2026-10-14 19:33:13.148 UTC [12407] ERROR:  permission denied for table stock_movements
+2026-10-14 19:33:13.148 UTC [12407] STATEMENT:  DELETE FROM "stock_movements"
+2026-10-14 19:33:13.151 UTC [12408] ERROR:  permission denied for table cash_movements
+2026-10-14 19:33:13.151 UTC [12408] STATEMENT:  UPDATE "cash_movements" SET tenant_id = tenant_id
+2026-10-14 19:33:13.153 UTC [12409] ERROR:  permission denied for table cash_movements
+2026-10-14 19:33:13.153 UTC [12409] STATEMENT:  DELETE FROM "cash_movements"
+2026-10-14 19:33:13.172 UTC [12412] WARNING:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.175 UTC [12413] WARNING:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.180 UTC [12394] ERROR:  permission denied to grant role "pg_read_server_files"
+2026-10-14 19:33:13.180 UTC [12394] DETAIL:  Only roles with the ADMIN option on role "pg_read_server_files" may grant this role.
+2026-10-14 19:33:13.180 UTC [12394] STATEMENT:  GRANT pg_read_server_files TO nile_login_legacy_a37e34
+2026-10-14 19:33:13.183 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:33:13.184 UTC [12343] LOG:  checkpoint complete: wrote 24 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=20, longest=0.001 s, average=0.000 s; distance=4920 kB, estimate=4920 kB; lsn=0/19A6B08, redo lsn=0/19A6AB0
+2026-10-14 19:33:13.294 UTC [12420] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.301 UTC [12421] ERROR:  permission denied for table audit_log
+2026-10-14 19:33:13.301 UTC [12421] STATEMENT:  UPDATE "audit_log" SET tenant_id = tenant_id
+2026-10-14 19:33:13.304 UTC [12422] ERROR:  permission denied for table audit_log
+2026-10-14 19:33:13.304 UTC [12422] STATEMENT:  DELETE FROM "audit_log"
+2026-10-14 19:33:13.307 UTC [12423] ERROR:  permission denied for table sales_transactions
+2026-10-14 19:33:13.307 UTC [12423] STATEMENT:  UPDATE "sales_transactions" SET tenant_id = tenant_id
+2026-10-14 19:33:13.309 UTC [12424] ERROR:  permission denied for table sales_transactions
+2026-10-14 19:33:13.309 UTC [12424] STATEMENT:  DELETE FROM "sales_transactions"
+2026-10-14 19:33:13.312 UTC [12425] ERROR:  permission denied for table transaction_lines
+2026-10-14 19:33:13.312 UTC [12425] STATEMENT:  UPDATE "transaction_lines" SET tenant_id = tenant_id
+2026-10-14 19:33:13.314 UTC [12426] ERROR:  permission denied for table transaction_lines
+2026-10-14 19:33:13.314 UTC [12426] STATEMENT:  DELETE FROM "transaction_lines"
+2026-10-14 19:33:13.317 UTC [12427] ERROR:  permission denied for table stock_movements
+2026-10-14 19:33:13.317 UTC [12427] STATEMENT:  UPDATE "stock_movements" SET tenant_id = tenant_id
+2026-10-14 19:33:13.319 UTC [12428] ERROR:  permission denied for table stock_movements
+2026-10-14 19:33:13.319 UTC [12428] STATEMENT:  DELETE FROM "stock_movements"
+2026-10-14 19:33:13.322 UTC [12429] ERROR:  permission denied for table cash_movements
+2026-10-14 19:33:13.322 UTC [12429] STATEMENT:  UPDATE "cash_movements" SET tenant_id = tenant_id
+2026-10-14 19:33:13.324 UTC [12430] ERROR:  permission denied for table cash_movements
+2026-10-14 19:33:13.324 UTC [12430] STATEMENT:  DELETE FROM "cash_movements"
+2026-10-14 19:33:13.327 UTC [12414] ERROR:  permission denied for table user
+2026-10-14 19:33:13.327 UTC [12414] STATEMENT:  SELECT count(*)::int n FROM "user"
+2026-10-14 19:33:13.345 UTC [12433] WARNING:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.348 UTC [12434] WARNING:  permission denied to set role "nile_app"
+2026-10-14 19:33:13.355 UTC [12415] ERROR:  permission denied to grant role "pg_read_server_files"
+2026-10-14 19:33:13.355 UTC [12415] DETAIL:  Only roles with the ADMIN option on role "pg_read_server_files" may grant this role.
+2026-10-14 19:33:13.355 UTC [12415] STATEMENT:  GRANT pg_read_server_files TO nile_login_newdefault_a37e34
+2026-10-14 19:33:13.357 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:33:13.362 UTC [12343] LOG:  checkpoint complete: wrote 18 buffers (0.1%); 1 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.005 s; sync files=18, longest=0.001 s, average=0.000 s; distance=4907 kB, estimate=4918 kB; lsn=0/1E718A0, redo lsn=0/1E71848
+2026-10-14 19:33:39.741 UTC [12513] ERROR:  permission denied for table user
+2026-10-14 19:33:39.741 UTC [12513] STATEMENT:  DELETE FROM "user"
+2026-10-14 19:33:39.743 UTC [12513] ERROR:  must be owner of table audit_log
+2026-10-14 19:33:39.743 UTC [12513] STATEMENT:  DROP TABLE audit_log
+2026-10-14 19:33:39.745 UTC [12513] ERROR:  must be owner of table audit_log
+2026-10-14 19:33:39.745 UTC [12513] STATEMENT:  ALTER TABLE audit_log DISABLE ROW LEVEL SECURITY
+2026-10-14 19:33:39.751 UTC [12520] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:33:39.761 UTC [12522] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:33:39.865 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:33:39.865 UTC [12343] LOG:  checkpoint complete: wrote 17 buffers (0.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=16, longest=0.001 s, average=0.000 s; distance=4918 kB, estimate=4918 kB; lsn=0/233F180, redo lsn=0/233F128
+2026-10-14 19:33:39.867 UTC [12508] WARNING:  role "g7_owner_dc07659b" has not been granted membership in role "nile_app" by role "postgres"
+2026-10-14 19:33:39.868 UTC [12508] WARNING:  role "g7_stranger_dc07659b" has not been granted membership in role "nile_app" by role "postgres"
+2026-10-14 19:34:08.692 UTC [12696] ERROR:  permission denied for table user
+2026-10-14 19:34:08.692 UTC [12696] STATEMENT:  DELETE FROM "user"
+2026-10-14 19:34:08.694 UTC [12696] ERROR:  must be owner of table audit_log
+2026-10-14 19:34:08.694 UTC [12696] STATEMENT:  DROP TABLE audit_log
+2026-10-14 19:34:08.696 UTC [12696] ERROR:  must be owner of table audit_log
+2026-10-14 19:34:08.696 UTC [12696] STATEMENT:  ALTER TABLE audit_log DISABLE ROW LEVEL SECURITY
+2026-10-14 19:34:08.702 UTC [12697] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:34:08.712 UTC [12699] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:34:08.812 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:34:08.813 UTC [12343] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=16, longest=0.001 s, average=0.000 s; distance=4933 kB, estimate=4933 kB; lsn=0/28105B0, redo lsn=0/2810558
+2026-10-14 19:34:08.814 UTC [12685] WARNING:  role "g7_owner_d42392bb" has not been granted membership in role "nile_app" by role "postgres"
+2026-10-14 19:34:08.815 UTC [12685] WARNING:  role "g7_stranger_d42392bb" has not been granted membership in role "nile_app" by role "postgres"
+2026-10-14 19:34:11.460 UTC [12830] ERROR:  permission denied for schema drizzle at character 8
+2026-10-14 19:34:11.460 UTC [12830] STATEMENT:  UPDATE drizzle.__drizzle_migrations SET hash = 'tampered'
+2026-10-14 19:34:11.463 UTC [12831] ERROR:  permission denied for table account
+2026-10-14 19:34:11.463 UTC [12831] STATEMENT:  SELECT password FROM "account" LIMIT 1
+2026-10-14 19:34:11.467 UTC [12832] ERROR:  permission denied for schema drizzle at character 15
+2026-10-14 19:34:11.467 UTC [12832] STATEMENT:  SELECT setval('drizzle.__drizzle_migrations_id_seq', 999999)
+2026-10-14 19:34:11.470 UTC [12833] ERROR:  permission denied for function purge_users
+2026-10-14 19:34:11.470 UTC [12833] STATEMENT:  SELECT public.purge_users()
+2026-10-14 19:34:11.474 UTC [12834] ERROR:  permission denied for schema public
+2026-10-14 19:34:11.474 UTC [12834] STATEMENT:  CREATE OR REPLACE FUNCTION public.f() RETURNS int LANGUAGE sql AS 'select 2'
+2026-10-14 19:34:11.477 UTC [12835] ERROR:  type "public.mood" does not exist
+2026-10-14 19:34:11.477 UTC [12835] STATEMENT:  ALTER TYPE public.mood ADD VALUE 'b'
+2026-10-14 19:34:11.480 UTC [12836] ERROR:  permission denied for table audit_log
+2026-10-14 19:34:11.480 UTC [12836] STATEMENT:  REINDEX TABLE audit_log
+2026-10-14 19:34:11.483 UTC [12837] ERROR:  permission denied for table audit_log
+2026-10-14 19:34:11.483 UTC [12837] STATEMENT:  REINDEX TABLE audit_log
+2026-10-14 19:34:11.487 UTC [12838] ERROR:  permission denied to COPY to or from an external program
+2026-10-14 19:34:11.487 UTC [12838] DETAIL:  Only roles with privileges of the "pg_execute_server_program" role may COPY to or from an external program.
+2026-10-14 19:34:11.487 UTC [12838] HINT:  Anyone can COPY to stdout or from stdin. psql's \copy command also works for anyone.
+2026-10-14 19:34:11.487 UTC [12838] STATEMENT:  COPY (SELECT 1) TO PROGRAM 'touch /tmp/rv_pwned_5fe09b'
+2026-10-14 19:34:11.490 UTC [12839] ERROR:  permission denied to COPY to a file
+2026-10-14 19:34:11.490 UTC [12839] DETAIL:  Only roles with privileges of the "pg_write_server_files" role may COPY to a file.
+2026-10-14 19:34:11.490 UTC [12839] HINT:  Anyone can COPY to stdout or from stdin. psql's \copy command also works for anyone.
+2026-10-14 19:34:11.490 UTC [12839] STATEMENT:  COPY (SELECT 'x') TO '/tmp/rv_pwned_5fe09b_w'
+2026-10-14 19:34:11.494 UTC [12840] ERROR:  permission denied to COPY from a file
+2026-10-14 19:34:11.494 UTC [12840] DETAIL:  Only roles with privileges of the "pg_read_server_files" role may COPY from a file.
+2026-10-14 19:34:11.494 UTC [12840] HINT:  Anyone can COPY to stdout or from stdin. psql's \copy command also works for anyone.
+2026-10-14 19:34:11.494 UTC [12840] STATEMENT:  CREATE TEMP TABLE t(l text); COPY t FROM '/etc/passwd'
+2026-10-14 19:34:11.499 UTC [12841] ERROR:  permission denied to terminate process
+2026-10-14 19:34:11.499 UTC [12841] DETAIL:  Only roles with privileges of the role whose process is being terminated or with privileges of the "pg_signal_backend" role may terminate this process.
+2026-10-14 19:34:11.499 UTC [12841] STATEMENT:  SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename = 'rv_owner_5fe09b' AND pid <> pg_backend_pid()
+2026-10-14 19:34:11.502 UTC [12842] ERROR:  permission denied for schema drizzle at character 22
+2026-10-14 19:34:11.502 UTC [12842] STATEMENT:  SELECT count(*) FROM drizzle.__drizzle_migrations
+2026-10-14 19:34:11.505 UTC [12843] ERROR:  permission denied to create role
+2026-10-14 19:34:11.505 UTC [12843] DETAIL:  Only roles with the CREATEROLE attribute may create roles.
+2026-10-14 19:34:11.505 UTC [12843] STATEMENT:  CREATE ROLE rv_spawn_5fe09b
+2026-10-14 19:34:11.509 UTC [12844] ERROR:  permission denied to create database
+2026-10-14 19:34:11.509 UTC [12844] STATEMENT:  CREATE DATABASE rv_spawn_db_5fe09b
+2026-10-14 19:34:11.509 UTC [12844] WARNING:  there is no transaction in progress
+2026-10-14 19:34:11.512 UTC [12845] ERROR:  permission denied to use replication slots
+2026-10-14 19:34:11.512 UTC [12845] DETAIL:  Only roles with the REPLICATION attribute may use replication slots.
+2026-10-14 19:34:11.512 UTC [12845] STATEMENT:  SELECT pg_create_physical_replication_slot('rv_slot_5fe09b')
+2026-10-14 19:34:11.515 UTC [12846] ERROR:  permission denied to set parameter "session_replication_role"
+2026-10-14 19:34:11.515 UTC [12846] STATEMENT:  SET session_replication_role = replica
+2026-10-14 19:34:11.518 UTC [12847] ERROR:  permission denied for schema drizzle at character 22
+2026-10-14 19:34:11.518 UTC [12847] STATEMENT:  SELECT count(*) FROM drizzle.__drizzle_migrations
+2026-10-14 19:34:11.580 UTC [12859] ERROR:  permission denied for schema public
+2026-10-14 19:34:11.580 UTC [12859] STATEMENT:  CREATE OR REPLACE FUNCTION public.f() RETURNS int LANGUAGE sql AS 'select 2'
+2026-10-14 19:34:11.669 UTC [12829] FATAL:  terminating connection due to administrator command
+2026-10-14 19:34:11.746 UTC [12887] ERROR:  permission denied for table __drizzle_migrations
+2026-10-14 19:34:11.746 UTC [12887] STATEMENT:  SELECT count(*) FROM drizzle.__drizzle_migrations
+2026-10-14 19:34:11.750 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:34:11.756 UTC [12343] LOG:  checkpoint complete: wrote 1005 buffers (6.1%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.005 s, sync=0.001 s, total=0.006 s; sync files=434, longest=0.001 s, average=0.000 s; distance=9189 kB, estimate=9189 kB; lsn=0/3109C38, redo lsn=0/3109BE0
+2026-10-14 19:34:11.758 UTC [12343] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:34:11.758 UTC [12343] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=4, longest=0.001 s, average=0.000 s; distance=10 kB, estimate=8271 kB; lsn=0/310C6D0, redo lsn=0/310C678
+2026-10-14 19:34:11.797 UTC [12342] LOG:  received fast shutdown request
+2026-10-14 19:34:11.797 UTC [12342] LOG:  aborting any active transactions
+2026-10-14 19:34:11.798 UTC [12342] LOG:  background worker "logical replication launcher" (PID 12348) exited with exit code 1
+2026-10-14 19:34:11.799 UTC [12343] LOG:  shutting down
+2026-10-14 19:34:11.799 UTC [12343] LOG:  checkpoint starting: shutdown immediate
+2026-10-14 19:34:11.799 UTC [12343] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=9, longest=0.001 s, average=0.000 s; distance=19 kB, estimate=7446 kB; lsn=0/3111658, redo lsn=0/3111658
+2026-10-14 19:34:11.803 UTC [12342] LOG:  database system is shut down

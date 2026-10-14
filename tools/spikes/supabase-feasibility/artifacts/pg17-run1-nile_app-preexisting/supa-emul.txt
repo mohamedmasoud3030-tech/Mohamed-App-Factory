@@ -1,0 +1,29 @@
+PostgreSQL 17.10 (throwaway cluster, port 5517)
+
+== scenario legacy: database supa_legacy_27d607
+FAIL E1    role setup as non-superuser owner: 42501 permission denied to grant role "nile_app"
+FAIL E2    migrate/start:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+FAIL E3    rerun:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+PASS E4    owner (BYPASSRLS, DB owner) refused as runtime login:  runtime login cannot assume the runtime role "nile_app" (42501: permission deni
+FAIL E5    ledger check:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+FAIL E6    LEGACY default grants: anon SELECT on 21/21 Nile tables (account=true), authenticated UPDATE on 21; SET ROLE anon: READ 1 row(s) of "user" (no RLS on Better Auth tables)
+PASS E7    dropped startup role fails closed:  runtime role is "nile_login_legacy_27d607", expected "nile_app"; refusing to start (ADR-0
+FAIL E8    pooler mode rejected:  runtime role is "nile_login_legacy_27d607", expected "nile_app"; refusing to start (ADR-0005 §7, G-7)
+FAIL E8    pooler mode setup: 42501 permission denied to revoke role "nile_app"
+INFO E10   GRANT .. WITH ADMIN FALSE, SET TRUE: NOT supported on 17 (42501 permission denied to grant role "nile_app")
+INFO E11   non-superuser CREATEROLE owner cannot grant pg_read_server_files on 17 (42501 permission denied to grant role "pg_read_server_files")
+
+== scenario newdefault: database supa_newdefault_27d607
+FAIL E1    role setup as non-superuser owner: 42501 permission denied to grant role "nile_app"
+FAIL E2    migrate/start:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+FAIL E3    rerun:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+PASS E4    owner (BYPASSRLS, DB owner) refused as runtime login:  runtime login cannot assume the runtime role "nile_app" (42501: permission deni
+FAIL E5    ledger check:  runtime login cannot assume the runtime role "nile_app" (42501: permission denied to set role "nile_app"); gra
+PASS E6    NEW default (no grants): anon SELECT on 0/21, authenticated UPDATE on 0; SET ROLE anon: denied (42501)
+PASS E7    dropped startup role fails closed:  runtime role is "nile_login_newdefault_27d607", expected "nile_app"; refusing to start (A
+FAIL E8    pooler mode rejected:  runtime role is "nile_login_newdefault_27d607", expected "nile_app"; refusing to start (ADR-0005 §7, G-7)
+FAIL E8    pooler mode setup: 42501 permission denied to revoke role "nile_app"
+INFO E10   GRANT .. WITH ADMIN FALSE, SET TRUE: NOT supported on 17 (42501 permission denied to grant role "nile_app")
+INFO E11   non-superuser CREATEROLE owner cannot grant pg_read_server_files on 17 (42501 permission denied to grant role "pg_read_server_files")
+
+cleanup: leftover probe roles = 0

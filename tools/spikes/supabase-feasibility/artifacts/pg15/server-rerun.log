@@ -1,0 +1,24 @@
+2026-10-14 19:35:38.666 UTC [13494] LOG:  starting PostgreSQL 15.18 on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, 64-bit
+2026-10-14 19:35:38.666 UTC [13494] LOG:  listening on IPv4 address "127.0.0.1", port 5515
+2026-10-14 19:35:38.666 UTC [13494] LOG:  listening on Unix socket "/tmp/supa-eval/.s.PGSQL.5515"
+2026-10-14 19:35:38.667 UTC [13497] LOG:  database system was shut down at 2026-10-14 19:35:38 UTC
+2026-10-14 19:35:38.668 UTC [13494] LOG:  database system is ready to accept connections
+2026-10-14 19:36:05.426 UTC [13588] ERROR:  permission denied for table user
+2026-10-14 19:36:05.426 UTC [13588] STATEMENT:  DELETE FROM "user"
+2026-10-14 19:36:05.428 UTC [13588] ERROR:  must be owner of table audit_log
+2026-10-14 19:36:05.428 UTC [13588] STATEMENT:  DROP TABLE audit_log
+2026-10-14 19:36:05.429 UTC [13588] ERROR:  must be owner of table audit_log
+2026-10-14 19:36:05.429 UTC [13588] STATEMENT:  ALTER TABLE audit_log DISABLE ROW LEVEL SECURITY
+2026-10-14 19:36:05.436 UTC [13589] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:36:05.446 UTC [13591] FATAL:  permission denied to set role "nile_app"
+2026-10-14 19:36:05.538 UTC [13495] LOG:  checkpoint starting: immediate force wait
+2026-10-14 19:36:05.539 UTC [13495] LOG:  checkpoint complete: wrote 19 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=16, longest=0.001 s, average=0.000 s; distance=4891 kB, estimate=4891 kB
+2026-10-14 19:36:05.541 UTC [13577] WARNING:  role "g7_owner_dccc164f" is not a member of role "nile_app"
+2026-10-14 19:36:05.542 UTC [13577] WARNING:  role "g7_stranger_dccc164f" is not a member of role "nile_app"
+2026-10-14 19:36:06.939 UTC [13494] LOG:  received fast shutdown request
+2026-10-14 19:36:06.939 UTC [13494] LOG:  aborting any active transactions
+2026-10-14 19:36:06.941 UTC [13494] LOG:  background worker "logical replication launcher" (PID 13500) exited with exit code 1
+2026-10-14 19:36:06.941 UTC [13495] LOG:  shutting down
+2026-10-14 19:36:06.941 UTC [13495] LOG:  checkpoint starting: shutdown immediate
+2026-10-14 19:36:06.941 UTC [13495] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=7, longest=0.001 s, average=0.000 s; distance=9 kB, estimate=4402 kB
+2026-10-14 19:36:06.944 UTC [13494] LOG:  database system is shut down

@@ -1,0 +1,2 @@
+WARNING: Some tests are still running when generating the JSON report.This is likely an internal bug in Vitest.Please report it to https://github.com/vitest-dev/vitest/issues
+JSON report written to /tmp/supa-eval/out/pg15/vitest-g7-pg.json

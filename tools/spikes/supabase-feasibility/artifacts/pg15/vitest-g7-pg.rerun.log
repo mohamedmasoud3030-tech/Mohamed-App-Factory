@@ -1,0 +1,30 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.11 [39m[90m/tmp/supa-eval/g7[39m
+
+ [32m✓[39m engines/db/test/runtime-role.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 12337[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses a role that cannot bypass RLS but is not nile_app [33m 1854[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses nile_app with BYPASSRLS [33m 1901[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses nile_app owning a table [33m 1885[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses nile_app owning a table in a schema whose name starts with "pg" but not "pg_" [33m 1769[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses nile_app able to SET ROLE to a role with more privileges [33m 1840[2mms[22m[39m
+[90mstderr[2m | apps/api/test/e2e-sale.test.ts[2m > [22m[2m1. authentication[2m > [22m[2mrejects a wrong password
+[22m[39m2026-10-14T19:35:58.219Z WARN [Better Auth]: Invalid password
+
+ [32m✓[39m apps/api/test/e2e-sale.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 5598[2mms[22m[39m
+     [33m[2m✓[22m[39m restart on the same data directory → log in again → the sale is still there [33m 503[2mms[22m[39m
+ [32m✓[39m engines/db/test/rls.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 4925[2mms[22m[39m
+     [33m[2m✓[22m[39m refuses to start on a superuser connection [33m 1897[2mms[22m[39m
+ [32m✓[39m engines/db/test/runtime-role.pg.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 353[2mms[22m[39m
+ [32m✓[39m engines/transactions/test/sale.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m engines/transactions/test/golden.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m engines/platform/test/permissions.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m engines/booking/test/booking.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m engines/platform/test/platform.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m engines/people/test/people.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m engines/catalog/test/catalog.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m11 passed[39m[22m[90m (11)[39m
+[2m      Tests [22m [1m[32m111 passed[39m[22m[90m (111)[39m
+[2m   Start at [22m 19:35:39
+[2m   Duration [22m 27.39s[2m (transform 355ms, setup 0ms, import 2.48s, tests 23.28s, environment 1ms)[22m
+

@@ -1,0 +1,117 @@
+server 18.4
+
+== pg_shdepend rows per role (queried from database "app"); dbid: cur=app, 0=shared, other=another DB
+  k_table            a:pg_class@cur
+  k_col              a:pg_class#2@cur
+  k_maint            a:pg_class@cur
+  k_seq              a:pg_class@cur
+  k_func             a:pg_proc@cur
+  k_catfunc          a:pg_proc@cur
+  k_type             a:pg_type@cur
+  k_schema           a:pg_namespace@cur
+  k_db               a:pg_database@0
+  k_dbother          a:pg_database@0
+  k_otherobj         a:pg_class@other
+  k_param            a:pg_parameter_acl@0
+  k_param_as         a:pg_parameter_acl@0
+  k_defacl_grantee   a:pg_default_acl@cur
+  k_defacl_role      o:pg_default_acl@cur
+  k_policy           r:pg_policy@cur
+  k_lo_owner         o:pg_largeobject@cur
+  k_lo_grant         a:pg_largeobject@cur
+  k_lang             a:pg_language@cur
+  k_fdw              a:pg_foreign_data_wrapper@cur
+  k_server           a:pg_foreign_server@cur
+  k_umap             o:pg_user_mapping@cur
+  k_tblspc           a:pg_tablespace@0
+  k_own_tbl          o:pg_class@cur
+  k_own_type         o:pg_type@cur
+  k_own_func         o:pg_proc@cur
+  k_own_schema       o:pg_namespace@cur
+  k_own_db           o:pg_database@0
+  k_own_seq          o:pg_class@cur
+  k_member_predef    NONE
+  k_member_role      NONE
+  k_attr             NONE
+  k_setting          NONE
+  k_pub_owner        a:pg_database@0, o:pg_publication@cur
+  PUBLIC grants add pg_shdepend rows? false (rows with refobjid=0: 0 -> 0)
+
+== membership catalog (pg_auth_members, PG16+ options)
+[
+  {
+    role: 'nile_app',
+    member: 'login',
+    admin_option: false,
+    inherit_option: true,
+    set_option: true
+  },
+  {
+    role: 'pg_execute_server_program',
+    member: 'k_member_predef',
+    admin_option: false,
+    inherit_option: true,
+    set_option: true
+  },
+  {
+    role: 'nile_app',
+    member: 'k_member_role',
+    admin_option: false,
+    inherit_option: true,
+    set_option: true
+  }
+]
+  implicit pg_database_owner: owner is member in app? { m: true, explicit_rows: 0 }
+
+== predefined roles in this server
+pg_checkpoint pg_create_subscription pg_database_owner pg_execute_server_program pg_maintain pg_monitor pg_read_all_data pg_read_all_settings pg_read_all_stats pg_read_server_files pg_signal_autovacuum_worker pg_signal_backend pg_stat_scan_tables pg_use_reserved_connections pg_write_all_data pg_write_server_files
+
+== privilege-inquiry functions available
+has_any_column_privilege has_column_privilege has_database_privilege has_foreign_data_wrapper_privilege has_function_privilege has_language_privilege has_largeobject_privilege has_parameter_privilege has_schema_privilege has_sequence_privilege has_server_privilege has_table_privilege has_tablespace_privilege has_type_privilege pg_has_role
+
+== catalog readability as login with startup role nile_app
+  pg_roles                 readable (54 rows)
+  pg_authid                DENIED (42501)
+  pg_auth_members          readable (6 rows)
+  pg_shdepend              readable (40 rows)
+  pg_db_role_setting       readable (1 rows)
+  pg_parameter_acl         readable (2 rows)
+  pg_default_acl           readable (2 rows)
+  pg_largeobject_metadata  readable (2 rows)
+  pg_user_mapping          DENIED (42501)
+  pg_user_mappings         readable (1 rows)
+  pg_init_privs            readable (229 rows)
+  pg_policy                readable (1 rows)
+  pg_database              readable (5 rows)
+  pg_tablespace            readable (3 rows)
+  pg_foreign_server        readable (1 rows)
+  pg_publication           readable (1 rows)
+  pg_subscription          readable (0 rows)
+  pg_hba_file_rules        DENIED (42501)
+  pg_db_role_setting content visible to nile_app: [ { r: 'k_setting', setconfig: [ 'work_mem=1MB' ] } ]
+  pg_parameter_acl content visible: [
+  {
+    parname: 'session_replication_role',
+    paracl: '{postgres=sA/postgres,k_param=s/postgres}'
+  },
+  {
+    parname: 'work_mem',
+    paracl: '{postgres=sA/postgres,k_param_as=A/postgres}'
+  }
+]
+  login may CONNECT to databases: postgres template1 template0 app other
+  pg_has_role(nile_app -> login) ?  false
+
+== signalling: login (no pg_signal_backend) vs another session of the same login
+  as nile_app: cancel same-login backend -> denied (42501)
+  after SET ROLE NONE: terminate same-login backend -> SUCCEEDED
+
+== ALTER ROLE ... IN DATABASE ... SET role = nile_app
+  membership present, no startup option: connected current_user=nile_app session_user=login2
+  client startup option -c role=login2 overrides?: connected current_user=login2 session_user=login2
+  membership REVOKED, no startup option: connected current_user=login2 session_user=login2 notices=["WARNING: permission denied to set role \"nile_app\""]
+  membership REVOKED, startup option -c role=nile_app: connection FAILED (42501: permission denied to set role "nile_app")
+  membership WITH SET FALSE, no startup option: connected current_user=login2 session_user=login2 notices=["WARNING: permission denied to set role \"nile_app\""]
+  membership WITH SET FALSE, startup option: connection FAILED (42501: permission denied to set role "nile_app")
+
+done

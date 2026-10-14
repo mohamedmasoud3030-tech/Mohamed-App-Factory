@@ -1,0 +1,30 @@
+PostgreSQL 15.18 (throwaway cluster, port 5515)
+INFO E0    nile_app created by ANOTHER role: non-superuser CREATEROLE owner CAN grant it on 15
+
+== scenario legacy: database supa_legacy_0792ca
+PASS E1    non-superuser CREATEROLE owner created nile_app (or found it), the runtime login, and granted the membership
+PASS E2    migrations 0000-0002 applied by non-superuser owner; G-7 startup accepted the login (3 migrations recorded)
+PASS E3    migration rerun is a no-op (recorded migrations still 3)
+PASS E4    owner (BYPASSRLS, DB owner) refused as runtime login:  runtime login cannot assume the runtime role "nile_app" (42501: permission deni
+PASS E5    ledger append-only for nile_app: 10/10 UPDATE/DELETE denied 42501; INSERT kept=true
+FAIL E6    LEGACY default grants: anon SELECT on 21/21 Nile tables (account=true), authenticated UPDATE on 21; SET ROLE anon: READ 1 row(s) of "user" (no RLS on Better Auth tables)
+PASS E7    dropped startup role fails closed:  runtime role is "nile_login_legacy_0792ca", expected "nile_app"; refusing to start (ADR-0
+PASS E8    ALTER ROLE..IN DATABASE..SET role by non-superuser owner works; no startup option: current_user=nile_app; G-7 check accepted
+PASS E9    membership revoked in pooler mode: server connects as nile_login_legacy_0792ca with notice "permission denied to set role "nile_app"" (fail-open at server); G-7 assertion refused:  runtime role is "nile_login_legacy_0792ca", expected "nile_
+INFO E10   GRANT .. WITH ADMIN FALSE, SET TRUE: NOT supported on 15 (42601 syntax error at or near "FALSE")
+INFO E11   non-superuser CREATEROLE owner CAN grant pg_read_server_files on 15
+
+== scenario newdefault: database supa_newdefault_0792ca
+PASS E1    non-superuser CREATEROLE owner created nile_app (or found it), the runtime login, and granted the membership
+PASS E2    migrations 0000-0002 applied by non-superuser owner; G-7 startup accepted the login (3 migrations recorded)
+PASS E3    migration rerun is a no-op (recorded migrations still 3)
+PASS E4    owner (BYPASSRLS, DB owner) refused as runtime login:  runtime login cannot assume the runtime role "nile_app" (42501: permission deni
+PASS E5    ledger append-only for nile_app: 10/10 UPDATE/DELETE denied 42501; INSERT kept=true
+PASS E6    NEW default (no grants): anon SELECT on 0/21, authenticated UPDATE on 0; SET ROLE anon: denied (42501)
+PASS E7    dropped startup role fails closed:  runtime role is "nile_login_newdefault_0792ca", expected "nile_app"; refusing to start (A
+PASS E8    ALTER ROLE..IN DATABASE..SET role by non-superuser owner works; no startup option: current_user=nile_app; G-7 check accepted
+PASS E9    membership revoked in pooler mode: server connects as nile_login_newdefault_0792ca with notice "permission denied to set role "nile_app"" (fail-open at server); G-7 assertion refused:  runtime role is "nile_login_newdefault_0792ca", expected "n
+INFO E10   GRANT .. WITH ADMIN FALSE, SET TRUE: NOT supported on 15 (42601 syntax error at or near "FALSE")
+INFO E11   non-superuser CREATEROLE owner CAN grant pg_read_server_files on 15
+
+cleanup: leftover probe roles = 0

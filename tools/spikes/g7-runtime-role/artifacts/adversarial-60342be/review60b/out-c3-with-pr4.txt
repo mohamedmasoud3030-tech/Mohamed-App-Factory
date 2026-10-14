@@ -1,0 +1,6 @@
+after PR #4 migration: nile_app UPDATE on audit_log=false, DELETE=false
+control base: UPDATE audit_log SET action          n/a                after SET ROLE NONE: denied (42501: permission denied for table audit_log)
+C3 column UPDATE(action) on audit_log              startup ACCEPTED   after SET ROLE NONE: privilege check PASSED (UPDATE 0)
+control base: LOCK audit_log ACCESS EXCLUSIVE      n/a                after SET ROLE NONE: denied (42501: permission denied for table audit_log)
+M3 MAINTAIN on audit_log: LOCK ACCESS EXCLUSIVE    startup ACCEPTED   after SET ROLE NONE: privilege check PASSED (LOCK )
+cleanup ok
