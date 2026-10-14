@@ -1,5 +1,24 @@
 # Architecture Decision Records
 
+> ## ⚠️ Numbering conflict with `main` — read before adding an ADR here
+>
+> `main` already carries **ADRs 0001–0006** (`docs/adr/` on `main`: technology stack, tenancy and
+> deployment topology, Milestone 1 scope, ORM and database access, authentication/tenancy/RLS, REST and
+> OpenAPI). This branch was authored in parallel and assumed an empty ADR space, so its numbering
+> **collides**:
+>
+> | This branch | Collides with (`main`) | Action |
+> | --- | --- | --- |
+> | `0001-localization-arabic-rtl-first.md` | ADR-0001 technology stack | Renumber to **ADR-0007** when landing on `main` |
+> | build-vs-adopt (pending, provisionally 0002) | ADR-0002 tenancy and deployment topology | Renumber to **ADR-0008** |
+> | first application / pilot domain (pending) | ADR-0003 Milestone 1 target | Renumber to **ADR-0009** |
+> | tenant isolation strategy (pending) | ADR-0004 ORM and database access | Not needed — `main`'s ADR-0002 + ADR-0005 already decide this |
+>
+> Accepted ADRs are immutable, so the resolution is a **renumber, never an edit**. Until the two
+> document sets are reconciled, treat the filenames here as working identifiers, not final numbers.
+> Surfaced per `AGENTS.md` ("material conflicts must be surfaced, never silently resolved"); details in
+> [review 0001 §4](../reviews/0001-nile-engines-db-auth-review.md).
+
 This directory holds the project's Architecture Decision Records (ADRs) — the durable record of *why*
 the system is shaped the way it is.
 
