@@ -52,7 +52,7 @@ Append-only protection for the five ledger tables is **open on `main`** and fixe
 | 0002 | Multi-tenant from day one; shared PostgreSQL for Milestone 1; each vertical independently deployable | ACCEPTED | **Gap:** one `apps/api` serves all systems; there are no per-vertical apps. Needs a decision when the first product UI is built |
 | 0003 | Milestone 1 = Sales walking skeleton (auth, tenancy, customers, audit, migrations, design-system UI, tests, CI, boundaries) | ACCEPTED | **Gap:** no customer/party module, no design-system UI, no CI, no boundary enforcement. Auth, tenancy, audit, migrations and tests exist |
 | 0004 | Drizzle ORM + Drizzle Kit | ACCEPTED | none known |
-| 0005 | Better Auth organizations; tenant context; RLS as the security boundary | ACCEPTED | Open gate findings G-5 (dev-mode origin, secret, cookies, rate limit) and G-7 (role assertion) |
+| 0005 | Better Auth organizations; tenant context; RLS as the security boundary | ACCEPTED | Open gate findings G-5 (dev-mode origin, secret, cookies, rate limit) and G-7 (role assertion; fixed on branch `fix/g7-runtime-role-assertion`, not merged) |
 | 0006 | REST + OpenAPI | ACCEPTED | G-11: `/api/openapi.json` is public; not yet an explicit decision |
 | 0007 | Roles via Better Auth access control | ACCEPTED | none known |
 | 0008 | Build vs. adopt the regulated core: recommends Odoo behind a port, only under conditions | **PROPOSED** | Evidence and limits: [`architecture/README.md`](architecture/README.md) |
