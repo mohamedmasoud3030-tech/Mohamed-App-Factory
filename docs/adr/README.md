@@ -10,7 +10,7 @@
 > | This branch | Collides with (`main`) | Action |
 > | --- | --- | --- |
 > | `0001-localization-arabic-rtl-first.md` | ADR-0001 technology stack | Renumber to **ADR-0007** when landing on `main` |
-> | build-vs-adopt (pending, provisionally 0002) | ADR-0002 tenancy and deployment topology | Renumber to **ADR-0008** |
+> | `0008-build-vs-adopt-ledger-substrate.md` (Proposed) | ADR-0002 tenancy and deployment topology | Renumber to **ADR-0008** — already numbered |
 > | first application / pilot domain (pending) | ADR-0003 Milestone 1 target | Renumber to **ADR-0009** |
 > | tenant isolation strategy (pending) | ADR-0004 ORM and database access | Not needed — `main`'s ADR-0002 + ADR-0005 already decide this |
 >
@@ -67,7 +67,7 @@ if it is deliberate.
 | ADR | Title | Status | Date |
 | --- | --- | --- | --- |
 | [0001](0001-localization-arabic-rtl-first.md) | Arabic and RTL are first-class requirements, English remains the repository language | Accepted | 2026-10-13 |
-| 0002 | Build vs. adopt: custom platform on permissively-licensed components | **Pending** — [spike](0003-option-c-spike.md) first pass done ([results](../architecture/proposals/0004-option-c-results.md)); no kill criterion fired; 4 measurements outstanding | — |
+| [0008](0008-build-vs-adopt-ledger-substrate.md) | Build vs. adopt: how the factory obtains its regulated core | **Proposed** — awaiting Mohamed; [all measurements complete](../architecture/proposals/0005-option-c-evidence.md) | 2026-10-14 |
 | 0003 | First application and pilot domain | **Pending** — needs Mohamed's input (proposal 0003 §5) | — |
 | 0004 | Tenant isolation strategy | **Pending** — build tenant-aware by default in the meantime | — |
 

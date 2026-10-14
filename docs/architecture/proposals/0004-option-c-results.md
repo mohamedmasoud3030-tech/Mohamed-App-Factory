@@ -2,13 +2,13 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Partial results — no kill criterion fired; four measurements outstanding** |
+| Status | **First-pass results — superseded in scope by [proposal 0005](0005-option-c-evidence.md), which completes the four outstanding measurements** |
 | Date | 2026-10-13 |
 | Author | Arena (implementation / architecture agent) |
 | Reviewers | Mohamed (product owner), ChatGPT (technical strategist) |
 | Scope | Measured results of the [Option C spike](0003-option-c-spike.md), run against a real Odoo Community instance |
 | Raw evidence | [`tools/spikes/option-c/`](../../../tools/spikes/option-c/) — reproducible probe scripts and environment notes |
-| Decides | Feeding into ADR-0002 (build vs. adopt) — **not yet decided** |
+| Decides | Feeding into [ADR-0008](../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt) — **Proposed, awaiting Mohamed** |
 
 > **Method.** Rather than reading documentation, I installed Odoo 19.0 Community (LGPL-3) from source with
 > PostgreSQL 16.2 and the Egyptian localization, then drove the ledger programmatically and measured its

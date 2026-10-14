@@ -2,11 +2,12 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Partial — no kill criterion fired; four measurements outstanding** |
+| Status | **Complete — all measurements finished; see proposal 0005 for results** |
 | Date | 2026-10-13 |
 | Author | Arena (implementation / architecture agent) |
 | Spike plan | [`../../../docs/architecture/proposals/0003-option-c-spike.md`](../../../docs/architecture/proposals/0003-option-c-spike.md) |
-| Full results write-up | [`../../../docs/architecture/proposals/0004-option-c-results.md`](../../../docs/architecture/proposals/0004-option-c-results.md) |
+| First-pass results | [`../../../docs/architecture/proposals/0004-option-c-results.md`](../../../docs/architecture/proposals/0004-option-c-results.md) |
+| Final measurements | [`../../../docs/architecture/proposals/0005-option-c-evidence.md`](../../../docs/architecture/proposals/0005-option-c-evidence.md) |
 
 ## What this directory is
 
@@ -37,6 +38,8 @@ odoo-bin shell -d spike_eg --db_host=<host> --db_user=<user> --db_password=<pw> 
 
 Probes are ordered: `probe-1` (initial, US chart — kept because its duplicate-reference result is
 valid), `probe-2` (Egyptian localization applied correctly), `probe-3` (ETA configuration surface,
+`probe-4` (a fully ETA-configured invoice posts), `probe-5` (JSON-RPC API ergonomics),
+`probe-6` (Arabic documents, in two parts — see `artifacts/`),
 payment allocation, period locking, SQL reporting).
 
 ## Known limitations
