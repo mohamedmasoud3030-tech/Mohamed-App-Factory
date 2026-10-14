@@ -4,8 +4,9 @@ Domain cores for the Nile demo platform. The domain files (`engines/*/src/*.ts`)
 are pure TypeScript with no DB, HTTP or UI. Persistence lives next to them in
 `engines/*/src/db/` and `engines/db/` (Drizzle + PostgreSQL RLS, ADR-0004/0005),
 and the HTTP API in `apps/api` (NestJS/Fastify REST + OpenAPI, ADR-0001/0006).
-Current implementation status and gaps: [`docs/STATUS.md`](../docs/STATUS.md). **Rule: no product screen is built before its engine exists
-and is tested.**
+Current implementation status and gaps: [`docs/STATUS.md`](../docs/STATUS.md).
+
+**Rule: no product screen is built before its engine exists and is tested.**
 
 | Engine | What it owns | Main sources |
 |---|---|---|
