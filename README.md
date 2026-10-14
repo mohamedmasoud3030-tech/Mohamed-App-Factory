@@ -22,4 +22,6 @@ apps).
 - [Architecture assessment](docs/architecture-assessment.md) — initial
   architectural consultation.
 - [Decisions](docs/DECISIONS.md) — index of Architecture Decision Records.
+- [Ledger evidence and decision memo](docs/architecture/README.md) — Option C
+  (Odoo) measurements, provenance, and the decisions still open.
 
