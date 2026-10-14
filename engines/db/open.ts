@@ -10,9 +10,9 @@
  *   nile_app); MIGRATION_DATABASE_URL = owner login. The role is a connection
  *   STARTUP setting (`-c role=nile_app`): the server applies it before the
  *   first query, refuses the connection if the login may not assume it, and
- *   `RESET ROLE` returns to it rather than to the login. The login itself is
- *   also checked: it must not be able to become a superuser, a BYPASSRLS role
- *   or the owner of any table (otherwise `SET ROLE <login>` would escape RLS).
+ *   `RESET ROLE` returns to it rather than to the login. `SET ROLE NONE` still
+ *   returns to the login, so the login is checked too: it must gain nothing
+ *   that `nile_app` lacks (see assertRuntimeRole).
  *   Deployment note: a `options=` parameter in DATABASE_URL overrides ours, and
  *   a pooler that drops startup options leaves sessions as the login; in both
  *   cases the startup assertion refuses to start (fail closed).
@@ -51,64 +51,102 @@ export interface OpenedDatabase {
 
 export class UnsafeRuntimeRoleError extends Error {}
 
-interface RoleRow {
-  role: string;
-  role_privileged: boolean;
-  role_owner: boolean;
-  login: string;
-  login_privileged: boolean;
-  login_owner: boolean;
+interface RoleCheckRow {
+  who: 'role' | 'login';
+  name: string;
+  /** a reachable role that is a superuser or BYPASSRLS */
+  privileged: string | null;
+  /** an object owned by a reachable role: the database, a schema or a relation */
+  owns: string | null;
+  /** a privilege held by a reachable role but not by the runtime role */
+  extra: string | null;
 }
 
 /**
- * Fail closed: the runtime connection must run as exactly `nile_app`, and
- * neither it nor (with `checkLogin`) the session login may be able to become a
- * role that bypasses RLS: a superuser, a BYPASSRLS role, or the owner of any
- * relation (owners are exempt from non-forced RLS and keep UPDATE/DELETE on
- * append-only tables). `pg_has_role(.., 'MEMBER')` covers the role itself and
- * every role it can reach by membership, i.e. everything `SET ROLE` can reach.
+ * Fail closed. The runtime connection must run as exactly `nile_app`, and the
+ * runtime role and (with `checkLogin`) the session login must not be able to
+ * gain more power than `nile_app`. "Reachable" means every role the subject can
+ * `SET ROLE` to, i.e. itself and all roles it is a member of, directly or
+ * through other roles (`pg_has_role(.., 'MEMBER')`, which also covers NOINHERIT
+ * memberships). No reachable role may:
+ * - be a superuser or BYPASSRLS;
+ * - own the database, a non-system schema or a relation (owners can disable or
+ *   drop RLS policies, drop tables, and are exempt from non-forced RLS);
+ * - hold a table, schema-CREATE or database-CREATE privilege that `nile_app`
+ *   does not hold (this covers direct grants and predefined roles such as
+ *   pg_write_all_data, and keeps append-only REVOKEs meaningful).
+ * Not covered: column-level grants, sequences, functions, and the PostgreSQL
+ * 17 MAINTAIN privilege.
  */
 export async function assertRuntimeRole(db: NileDb, opts: { checkLogin?: boolean } = {}): Promise<string> {
   const res = (await db.execute(sql`
-    WITH owners AS (
-      SELECT DISTINCT c.relowner AS oid FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
-      WHERE n.nspname <> 'information_schema' AND n.nspname NOT LIKE 'pg\_%'
-    )
-    SELECT current_user AS role,
-      EXISTS (SELECT 1 FROM pg_roles x WHERE (x.rolsuper OR x.rolbypassrls)
-              AND pg_has_role(current_user, x.oid, 'MEMBER')) AS role_privileged,
-      EXISTS (SELECT 1 FROM owners o WHERE pg_has_role(current_user, o.oid, 'MEMBER')) AS role_owner,
-      session_user AS login,
-      EXISTS (SELECT 1 FROM pg_roles x WHERE (x.rolsuper OR x.rolbypassrls)
-              AND pg_has_role(session_user, x.oid, 'MEMBER')) AS login_privileged,
-      EXISTS (SELECT 1 FROM owners o WHERE pg_has_role(session_user, o.oid, 'MEMBER')) AS login_owner`)) as unknown as {
-    rows: RoleRow[];
-  };
-  const row = res.rows[0];
-  if (!row) throw new UnsafeRuntimeRoleError('cannot determine runtime role');
-  if (row.role !== RUNTIME_ROLE) {
+    WITH subjects(who, name) AS (VALUES ('role', current_user::text), ('login', session_user::text)),
+    reach AS (
+      SELECT s.who, x.oid, x.rolname, x.rolsuper, x.rolbypassrls
+      FROM subjects s JOIN pg_roles x ON pg_has_role(s.name, x.oid, 'MEMBER')
+    ),
+    schemas AS (
+      SELECT n.oid, n.nspname, n.nspowner FROM pg_namespace n
+      WHERE n.nspname <> 'information_schema' AND n.nspname NOT LIKE 'pg\\_%'
+    ),
+    rels AS (
+      SELECT c.oid, c.relkind, c.relowner, format('%s.%s', sc.nspname, c.relname) AS name
+      FROM pg_class c JOIN schemas sc ON sc.oid = c.relnamespace
+    ),
+    privs(p) AS (VALUES ('SELECT'), ('INSERT'), ('UPDATE'), ('DELETE'), ('TRUNCATE'), ('REFERENCES'), ('TRIGGER'))
+    SELECT s.who, s.name,
+      (SELECT min(r.rolname) FROM reach r WHERE r.who = s.who AND (r.rolsuper OR r.rolbypassrls)) AS privileged,
+      (SELECT min(o.what) FROM (
+        SELECT 'database ' || d.datname AS what FROM pg_database d JOIN reach r ON r.oid = d.datdba AND r.who = s.who
+          WHERE d.datname = current_database()
+        UNION ALL
+        SELECT 'schema ' || sc.nspname FROM schemas sc JOIN reach r ON r.oid = sc.nspowner AND r.who = s.who
+        UNION ALL
+        SELECT 'relation ' || rl.name FROM rels rl JOIN reach r ON r.oid = rl.relowner AND r.who = s.who
+      ) o) AS owns,
+      (SELECT min(e.what) FROM (
+        SELECT pv.p || ' on ' || rl.name AS what FROM reach r CROSS JOIN rels rl CROSS JOIN privs pv
+          WHERE r.who = s.who AND rl.relkind IN ('r', 'p', 'v', 'm', 'f')
+            AND has_table_privilege(r.oid, rl.oid, pv.p) AND NOT has_table_privilege(current_user, rl.oid, pv.p)
+        UNION ALL
+        SELECT 'CREATE on schema ' || sc.nspname FROM reach r CROSS JOIN schemas sc
+          WHERE r.who = s.who
+            AND has_schema_privilege(r.oid, sc.oid, 'CREATE') AND NOT has_schema_privilege(current_user, sc.oid, 'CREATE')
+        UNION ALL
+        SELECT 'CREATE on database ' || current_database() FROM reach r
+          WHERE r.who = s.who
+            AND has_database_privilege(r.oid, current_database(), 'CREATE')
+            AND NOT has_database_privilege(current_user, current_database(), 'CREATE')
+      ) e) AS extra
+    FROM subjects s`)) as unknown as { rows: RoleCheckRow[] };
+  const role = res.rows.find((x) => x.who === 'role');
+  const login = res.rows.find((x) => x.who === 'login');
+  if (!role || !login) throw new UnsafeRuntimeRoleError('cannot determine runtime role');
+  if (role.name !== RUNTIME_ROLE) {
     throw new UnsafeRuntimeRoleError(
-      `runtime role is "${row.role}", expected "${RUNTIME_ROLE}"; refusing to start (ADR-0005 §7, G-7)`,
+      `runtime role is "${role.name}", expected "${RUNTIME_ROLE}"; refusing to start (ADR-0005 §7, G-7)`,
     );
   }
-  if (row.role_privileged || row.role_owner) {
-    throw new UnsafeRuntimeRoleError(
-      `runtime role "${row.role}" can become a superuser or BYPASSRLS role or owns tables; refusing to start (ADR-0005 §7)`,
-    );
-  }
-  if (opts.checkLogin) {
-    if (row.login_privileged) {
+  const subjects = opts.checkLogin ? [role, login] : [role];
+  for (const x of subjects) {
+    const what = x.who === 'role' ? `runtime role "${x.name}"` : `runtime login "${x.name}"`;
+    if (x.privileged) {
       throw new UnsafeRuntimeRoleError(
-        `runtime login "${row.login}" is (or can become) a superuser or BYPASSRLS role; use a dedicated non-privileged login (G-7)`,
+        `${what} is or can become a superuser or BYPASSRLS role ("${x.privileged}"); refusing to start (ADR-0005 §7, G-7)`,
       );
     }
-    if (row.login_owner) {
+    if (x.owns) {
       throw new UnsafeRuntimeRoleError(
-        `runtime login "${row.login}" owns tables (or can become their owner): use the migration owner only in MIGRATION_DATABASE_URL (G-7)`,
+        `${what} owns, or can become the owner of, ${x.owns}; the migration owner belongs only in MIGRATION_DATABASE_URL (G-7)`,
+      );
+    }
+    if (x.extra) {
+      throw new UnsafeRuntimeRoleError(
+        `${what} holds, or can gain, a privilege that "${RUNTIME_ROLE}" lacks (${x.extra}); use a dedicated login (G-7)`,
       );
     }
   }
-  return row.role;
+  return role.name;
 }
 
 /**
