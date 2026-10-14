@@ -4,15 +4,28 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["node", "vitest/globals"],
-    "noEmit": true
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["engines/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "engines/**/*.ts",
+    "apps/**/*.ts",
+    "drizzle.config.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -3,24 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Nile demo-platform — engines extracted from Mohamed's production codebases (see docs/REUSE.md). Stack per docs/adr/0001-0006.",
+  "description": "Nile demo-platform \u2014 engines extracted from Mohamed's production codebases (see docs/REUSE.md). Stack per docs/adr/0001-0006.",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:engines": "vitest run engines"
+    "test:engines": "vitest run engines",
+    "api:dev": "tsx apps/api/src/main.ts",
+    "api:smoke": "tsx apps/api/scripts/smoke.ts",
+    "db:generate": "drizzle-kit generate",
+    "test:e2e": "vitest run apps"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.7",
+    "@nestjs/common": "^12.1.3",
+    "@nestjs/core": "^12.1.3",
+    "@nestjs/platform-fastify": "^12.1.3",
+    "@nestjs/swagger": "^12.0.2",
+    "better-auth": "^1.7.7",
     "decimal.js": "^10.4.3",
     "drizzle-orm": "^0.45.4",
+    "pg": "^8.23.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.9",
+    "@nestjs/testing": "^12.1.3",
     "@types/node": "^22.10.0",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^4.1.11"
   }
 }

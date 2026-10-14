@@ -1,94 +1,165 @@
 /**
- * Real-PostgreSQL (PGlite) proof of ADR-0005 fail-closed invariants:
- *  1. No tenant context -> zero rows.
- *  2. Tenant A cannot read tenant B rows.
- *  3. Tenant A cannot insert rows as tenant B.
- * The migration uses FORCE RLS, so policies bind even the table owner here —
- * in production the runtime role is additionally non-owner (ADR-0005 §7).
+ * ADR-0005 §9 fail-closed invariants, proven on real PostgreSQL (PGlite)
+ * through the SAME migration + connection path production uses (open.ts):
+ * generated migrations applied as owner, queries executed as `nile_app`.
  */
-import { readFileSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { drizzle } from 'drizzle-orm/pglite';
+import { eq, sql } from 'drizzle-orm';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { assertRuntimeRole, openPglite, UnsafeRuntimeRoleError, type NileDb, type OpenedDatabase } from '../open.js';
+import { organization } from '../../platform/src/auth/schema.js';
+import { withTenant, TenantScopeError } from '../../platform/src/db/with-tenant.js';
+import { catalogItems, catalogVariants } from '../../catalog/src/db/schema.js';
+import { salesTransactions, transactionLines } from '../../transactions/src/db/schema.js';
 
-const ORG_A = '11111111-1111-1111-1111-111111111111';
-const ORG_B = '22222222-2222-2222-2222-222222222222';
-let db: PGlite;
+let opened: OpenedDatabase;
+let db: NileDb;
+let A: string;
+let B: string;
+let saleB: string;
+let variantA: string;
 
-async function asTenant<T>(tenantId: string | null, fn: () => Promise<T>): Promise<T> {
-  await db.query(`SELECT set_config('app.tenant_id', $1, false)`, [tenantId ?? '']);
-  try {
-    return await fn();
-  } finally {
-    await db.query(`SELECT set_config('app.tenant_id', '', false)`);
-  }
+const count = async (tx: any, table: any) => Number((await tx.select({ n: sql<number>`count(*)` }).from(table))[0].n);
+/** Assert a rejection carries a specific PostgreSQL SQLSTATE (not just "some error"). */
+async function rejectsWith(p: Promise<unknown>, code: string) {
+  const err = await p.then(() => null, (e) => e);
+  let c: any = err;
+  while (c && !c.code) c = c.cause;
+  expect(c?.code, String(err)).toBe(code);
+}
+const currentTenant = async (d: any) =>
+  ((await d.execute(sql`SELECT current_setting('app.tenant_id', true) AS v`)) as any).rows[0].v as string | null;
+
+async function seedSale(tenantId: string, key: string) {
+  return withTenant(db, tenantId, async (tx: any) => {
+    const [item] = await tx.insert(catalogItems).values({ tenantId, nameAr: 'صنف', nameEn: 'Item', category: 'x', priceMinor: 100 }).returning();
+    const [v] = await tx.insert(catalogVariants).values({ tenantId, itemId: item.id, sku: `SKU-${key}`, labelAr: 'ا', labelEn: 'a', stock: '5' }).returning();
+    const [s] = await tx
+      .insert(salesTransactions)
+      .values({ tenantId, kind: 'sale', totalMinor: 100, idempotencyKey: key, requestHash: 'h', createdBy: tenantId })
+      .returning();
+    return { saleId: s.id as string, variantId: v.id as string };
+  });
 }
 
 beforeAll(async () => {
-  db = new PGlite();
-  const sql = readFileSync(new URL('../migrations/0001_nile_engines.sql', import.meta.url), 'utf8');
-  await db.exec(sql);
-  // Production runs as a NON-superuser, non-owner runtime role (ADR-0005 §7);
-  // superusers bypass RLS by design, so the whole suite runs under nile_app.
-  await db.exec(`CREATE ROLE nile_app NOLOGIN;
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO nile_app;`);
-  await asTenant(ORG_A, async () => {
-    await db.query(`INSERT INTO organizations (id, name, slug) VALUES ($1, 'A', 'a')`, [ORG_A]);
-    await db.query(
-      `INSERT INTO bookable_resources (id, tenant_id, kind, name_ar, name_en) VALUES ('33333333-3333-3333-3333-333333333333', $1, 'court', 'ملعب', 'Court')`,
-      [ORG_A],
+  opened = await openPglite();
+  db = opened.db;
+  [{ id: A }] = (await db.insert(organization).values({ name: 'A', slug: 'a' }).returning({ id: organization.id })) as [{ id: string }];
+  [{ id: B }] = (await db.insert(organization).values({ name: 'B', slug: 'b' }).returning({ id: organization.id })) as [{ id: string }];
+  ({ variantId: variantA } = await seedSale(A, 'key-a'));
+  ({ saleId: saleB } = await seedSale(B, 'key-b'));
+});
+afterAll(() => opened.close());
+
+describe('runtime role (ADR-0005 §7)', () => {
+  it('app runs as nile_app, which cannot bypass RLS', async () => {
+    expect(await assertRuntimeRole(db)).toBe('nile_app');
+  });
+
+  it('refuses to start on a superuser connection', async () => {
+    const raw = new PGlite();
+    await expect(assertRuntimeRole(drizzle(raw) as unknown as NileDb)).rejects.toBeInstanceOf(UnsafeRuntimeRoleError);
+    await raw.close();
+  });
+
+  it('every table with tenant_id has RLS ENABLED + FORCED + a policy (guard for future tables)', async () => {
+    const res = (await db.execute(sql`
+      SELECT c.relname AS t, c.relrowsecurity AS rls, c.relforcerowsecurity AS force,
+             (SELECT count(*) FROM pg_policy p WHERE p.polrelid = c.oid)::int AS policies
+      FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE n.nspname = 'public' AND c.relkind = 'r'
+        AND EXISTS (SELECT 1 FROM pg_attribute a WHERE a.attrelid = c.oid AND a.attname = 'tenant_id' AND NOT a.attisdropped)`)) as any;
+    expect(res.rows.length).toBeGreaterThanOrEqual(14);
+    for (const r of res.rows) expect({ t: r.t, rls: r.rls, force: r.force, ok: r.policies > 0 }).toEqual({ t: r.t, rls: true, force: true, ok: true });
+  });
+});
+
+describe('fail-closed invariants (ADR-0005 §9)', () => {
+  it('1. no tenant context → zero rows', async () => {
+    expect(await count(db, salesTransactions)).toBe(0);
+    expect(await count(db, catalogItems)).toBe(0);
+  });
+
+  it('2. tenant A cannot read tenant B rows', async () => {
+    await withTenant(db, A, async (tx: any) => {
+      expect(await count(tx, salesTransactions)).toBe(1);
+      expect(await tx.select().from(salesTransactions).where(eq(salesTransactions.id, saleB))).toEqual([]);
+    });
+  });
+
+  it('3a. tenant A cannot insert rows as tenant B (RLS WITH CHECK → 42501)', async () => {
+    await rejectsWith(
+      withTenant(db, A, (tx: any) =>
+        tx.insert(salesTransactions).values({ tenantId: B, kind: 'sale', totalMinor: 1, idempotencyKey: 'evil', requestHash: 'h', createdBy: A }),
+      ),
+      '42501',
     );
-    await db.query(
-      `INSERT INTO bookings (tenant_id, resource_id, customer_name, customer_phone, starts_at, ends_at, code)
-       VALUES ($1, '33333333-3333-3333-3333-333333333333', 'Ahmed', '0100', now(), now() + interval '1 hour', 'BK-AAAAA')`,
-      [ORG_A],
+  });
+
+  it('3b. tenant A cannot update or delete tenant B rows', async () => {
+    await withTenant(db, A, async (tx: any) => {
+      const upd = await tx.update(salesTransactions).set({ totalMinor: 0 }).where(eq(salesTransactions.id, saleB)).returning();
+      const del = await tx.delete(salesTransactions).where(eq(salesTransactions.id, saleB)).returning();
+      expect(upd).toEqual([]);
+      expect(del).toEqual([]);
+    });
+    await withTenant(db, B, async (tx: any) => {
+      expect((await tx.select().from(salesTransactions).where(eq(salesTransactions.id, saleB)))[0].totalMinor).toBe(100);
+    });
+  });
+
+  it('3c. composite FK: tenant A cannot attach a line to tenant B sale (FK checks bypass RLS → 23503)', async () => {
+    await rejectsWith(
+      withTenant(db, A, (tx: any) =>
+        tx.insert(transactionLines).values({
+          tenantId: A, transactionId: saleB, variantId: variantA, nameAr: 'x', nameEn: 'x', quantity: '1', unitPriceMinor: 1, lineTotalMinor: 1,
+        }),
+      ),
+      '23503',
     );
   });
-  await asTenant(ORG_B, async () => {
-    await db.query(`INSERT INTO organizations (id, name, slug) VALUES ($1, 'B', 'b')`, [ORG_B]);
-  });
-  await db.query('SET ROLE nile_app');
-}, 60_000);
 
-describe('RLS tenant isolation (real PostgreSQL)', () => {
-  it('no tenant context -> zero rows (fail closed)', async () => {
-    const r = await db.query<{ n: number }>('SELECT count(*)::int AS n FROM bookings');
-    expect(r.rows[0]?.n).toBe(0);
+  it('4. tenant context is transaction-local (gone after commit and after rollback)', async () => {
+    await withTenant(db, A, async () => undefined);
+    expect(await currentTenant(db)).toBeFalsy();
+    await expect(withTenant(db, A, async () => { throw new Error('boom'); })).rejects.toThrow('boom');
+    expect(await currentTenant(db)).toBeFalsy();
+    expect(await count(db, salesTransactions)).toBe(0);
   });
 
-  it('tenant B cannot read tenant A bookings', async () => {
-    await asTenant(ORG_B, async () => {
-      const r = await db.query<{ n: number }>('SELECT count(*)::int AS n FROM bookings');
-      expect(r.rows[0]?.n).toBe(0);
-    });
-    await asTenant(ORG_A, async () => {
-      const r = await db.query<{ n: number }>('SELECT count(*)::int AS n FROM bookings');
-      expect(r.rows[0]?.n).toBe(1);
-    });
+  it('5. a reused (pooled) connection never carries context between transactions', async () => {
+    const seen: number[] = [];
+    for (const t of [A, B, A, B]) seen.push(await withTenant(db, t, (tx: any) => count(tx, catalogItems)));
+    expect(seen).toEqual([1, 1, 1, 1]);
+    expect(await count(db, catalogItems)).toBe(0);
+  });
+});
+
+describe('data-model hardening', () => {
+  it('money is 64-bit: a 30,000,000.00 EGP total is stored exactly', async () => {
+    const total = 3_000_000_000; // minor units
+    const row = await withTenant(db, A, async (tx: any) =>
+      (await tx.insert(salesTransactions).values({ tenantId: A, kind: 'sale', totalMinor: total, idempotencyKey: 'big', requestHash: 'h', createdBy: A }).returning())[0],
+    );
+    expect(row.totalMinor).toBe(total);
   });
 
-  it('tenant A cannot insert rows as tenant B', async () => {
-    await asTenant(ORG_A, async () => {
-      await expect(
-        db.query(
-          `INSERT INTO bookings (tenant_id, resource_id, customer_name, customer_phone, starts_at, ends_at, code)
-           VALUES ($1, '33333333-3333-3333-3333-333333333333', 'Mallory', '0100', now(), now(), 'BK-BBBBB')`,
-          [ORG_B],
-        ),
-      ).rejects.toThrow();
-    });
+  it('idempotency keys are unique per tenant, not globally', async () => {
+    await withTenant(db, B, (tx: any) =>
+      tx.insert(salesTransactions).values({ tenantId: B, kind: 'sale', totalMinor: 1, idempotencyKey: 'key-a', requestHash: 'h', createdBy: B }),
+    );
+    await rejectsWith(
+      withTenant(db, A, (tx: any) =>
+        tx.insert(salesTransactions).values({ tenantId: A, kind: 'sale', totalMinor: 1, idempotencyKey: 'key-a', requestHash: 'h', createdBy: A }),
+      ),
+      '23505',
+    );
   });
 
-  it('composite uniqueness is per-tenant (same idempotency key, two tenants OK)', async () => {
-    const insertTxn = (tenant: string) =>
-      db.query(
-        `INSERT INTO sales_transactions (tenant_id, kind, total_minor, idempotency_key, created_by)
-         VALUES ($1, 'sale', 100, 'key-1', 'u1')`,
-        [tenant],
-      );
-    await asTenant(ORG_A, () => insertTxn(ORG_A));
-    await asTenant(ORG_B, () => insertTxn(ORG_B));
-    await asTenant(ORG_A, async () => {
-      await expect(insertTxn(ORG_A)).rejects.toThrow(); // duplicate within tenant
-    });
+  it('withTenant rejects missing or malformed tenant ids before touching the DB', async () => {
+    await expect(withTenant(db, '', async () => 1)).rejects.toBeInstanceOf(TenantScopeError);
+    await expect(withTenant(db, "x' OR 1=1 --", async () => 1)).rejects.toBeInstanceOf(TenantScopeError);
   });
 });

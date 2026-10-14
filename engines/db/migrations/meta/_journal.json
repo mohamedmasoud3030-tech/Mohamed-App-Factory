@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791954017759,
+      "tag": "0000_nile_engines",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791954025446,
+      "tag": "0001_security_hardening",
+      "breakpoints": true
+    }
+  ]
+}

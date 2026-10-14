@@ -1,26 +1,22 @@
 /**
- * Platform DB schema (Drizzle, ADR-0004). Module-owned per ADR-0004 migration model.
- * SQL mirror: engines/db/migrations/0001_nile_engines.sql
+ * Platform tenant-owned tables (Drizzle, ADR-0004). Identity/membership
+ * tables live in ../auth/schema.ts (platform-global, see note there).
  */
-import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-
-/** A tenant = one customer organization (ADR-0002). */
-export const organizations = pgTable('organizations', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  slug: text('slug').notNull().unique(),
-  isDemo: text('is_demo').notNull().default('false'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+import { index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { tenantIdColumn, tenantPolicy } from './tenancy.js';
 
 /** Tenant-scoped audit trail (ADR-0002: audit records carry tenant context). */
-export const auditLog = pgTable('audit_log', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  tenantId: uuid('tenant_id').notNull().references(() => organizations.id),
-  userId: text('user_id').notNull(),
-  action: text('action').notNull(),
-  entity: text('entity').notNull(),
-  entityId: text('entity_id'),
-  payload: text('payload'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-});
+export const auditLog = pgTable(
+  'audit_log',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: tenantIdColumn(),
+    userId: uuid('user_id').notNull(),
+    action: text('action').notNull(),
+    entity: text('entity').notNull(),
+    entityId: text('entity_id'),
+    payload: text('payload'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('audit_log_tenant_created_idx').on(t.tenantId, t.createdAt), tenantPolicy()],
+).enableRLS();
