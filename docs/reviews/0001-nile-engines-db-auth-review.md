@@ -8,8 +8,16 @@
 | Reviewed commit | `0811ae0` (merge of PR #2, `feat/nile-engines-wave2-db`) |
 | Reviewed scope | `engines/**`, `engines/db/migrations/0001_nile_engines.sql`, `docs/adr/0001`–`0006`, `AGENTS.md`, `docs/REUSE.md` |
 | Method | Read every file; ran the suite; wrote an independent probe against a real PostgreSQL (PGlite) applying the real migration; generated migrations from the Drizzle schemas with `drizzle-kit` to test the two sources of truth against each other |
-| Evidence | [`tools/spikes/nile-review/probe-db-findings.mjs`](../../../tools/spikes/nile-review/probe-db-findings.mjs) — reproducible |
+| Evidence | [`tools/spikes/nile-review/probe-db-findings.mjs`](../../tools/spikes/nile-review/probe-db-findings.mjs) — reproducible |
 | Branch | `arena/bfcb5ed1-mohamed-app-factory` (not merged to `main`, by instruction) |
+
+
+> **Consolidation note (2026-10-14).** Historical review of `0811ae0` (PR #2), imported unchanged except
+> for this note and one link fix. Most findings were fixed by PR #3 (`ebcfe72`); H4 is fixed by PR #4
+> (open). Per-finding status on current `main`: [docs/architecture/README.md](../architecture/README.md).
+> The renumbering plan in §4 is superseded: the localization ADR landed as **ADR-0009**, because `main`'s
+> ADR-0007 is now the roles ADR. The probe applies `engines/db/migrations/0001_nile_engines.sql`, which no
+> longer exists on `main`; it reproduces only at `0811ae0`.
 
 ---
 

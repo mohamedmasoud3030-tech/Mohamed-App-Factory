@@ -8,7 +8,14 @@
 | Reviewers | Mohamed (product owner), ChatGPT (technical strategist) |
 | Scope | Measured results of the [Option C spike](0003-option-c-spike.md), run against a real Odoo Community instance |
 | Raw evidence | [`tools/spikes/option-c/`](../../../tools/spikes/option-c/) — reproducible probe scripts and environment notes |
-| Decides | Feeding into [ADR-0008](../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt) — **Proposed, awaiting Mohamed** |
+| Decides | Feeding into [ADR-0008](../../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt) — **Proposed, awaiting Mohamed** |
+
+> **Numbering key (added on consolidation, 2026-10-14).** This document was written on a branch whose
+> ADR numbers collided with `main`. Citations to decisions that now exist on `main` have been updated:
+> localization → **ADR-0009** (originally ADR-0001), build vs. adopt → **ADR-0008** (originally ADR-0002).
+> Other branch-era labels refer to records never created on `main`: "ADR-0003 (first application)" is
+> pending; "ADR-0004 (tenancy)" is not needed because `main`'s ADR-0002 and ADR-0005 decide it. The
+> unmodified original is at commit `e61cd06`; provenance in [docs/architecture/README.md](../README.md).
 
 > **Method.** Rather than reading documentation, I installed Odoo 19.0 Community (LGPL-3) from source with
 > PostgreSQL 16.2 and the Egyptian localization, then drove the ledger programmatically and measured its
@@ -31,7 +38,7 @@ idempotency is ours to enforce, ETA issuance has a hard configuration prerequisi
 requires tracking Odoo's schema.
 
 The spike is **not finished**. Four measurements remain (Arabic PDF, external API ergonomics, upgrade
-rehearsal, per-tenant operations) and they decide the maintenance-tax question. ADR-0002 stays open.
+rehearsal, per-tenant operations) and they decide the maintenance-tax question. ADR-0008 stays open.
 
 ---
 
@@ -179,7 +186,7 @@ matter so much.
 
 | # | Measurement | Why it decides | Why it is outstanding |
 | --- | --- | --- | --- |
-| **M6** | Arabic invoice PDF rendering (RTL, fonts, bidi, ETA QR code) | Hard requirement (ADR-0001). Arabic documents are legally mandatory | No `wkhtmltopdf` in the sandbox environment |
+| **M6** | Arabic invoice PDF rendering (RTL, fonts, bidi, ETA QR code) | Hard requirement (ADR-0009). Arabic documents are legally mandatory | No `wkhtmltopdf` in the sandbox environment |
 | **M8** | External API ergonomics for a TypeScript caller (JSON-RPC vs XML-RPC) | Determines whether the port stays thin or becomes a project | Not attempted in this pass |
 | **M9** | Upgrade rehearsal on a stock system with zero custom code | **This is the maintenance-tax question** — the main reason to prefer Option C over Option D | Requires a second version to migrate between |
 | **M10** | Per-tenant operations (one database per tenant: provisioning, backup, restore) | Feeds the tenancy decision (D-1) and the operational cost of hosting many tenants | Out of scope for the first pass |
@@ -211,7 +218,7 @@ before any invoice can be issued, schema-coupled reporting, and unmeasured upgra
 
 **Recommendation: continue Option C investigation rather than committing or abandoning.**
 Specifically, complete M6, M8, M9, M10 (and the fully-configured ETA posting) on a real VM before
-ADR-0002 is written. If M9 (upgrade rehearsal) is bad, Option C loses its main justification and
+ADR-0008 is written. If M9 (upgrade rehearsal) is bad, Option C loses its main justification and
 Option D wins; if M9 is clean, Option C becomes the strongest recommendation for the reasons Mohamed's
 situation creates: an internal customer zero in Egypt needing Arabic, ETA-compliant books **in weeks**,
 not quarters.
@@ -237,9 +244,9 @@ Saved, with high confidence:
 | # | Step | Owner | Notes |
 | --- | --- | --- | --- |
 | 1 | Complete M6, M8, M9, M10 and the fully-configured ETA posting | Arena | Needs a VM: Docker, a second Odoo version for the upgrade rehearsal, and `wkhtmltopdf` |
-| 2 | Decide Option C vs Option D and write ADR-0002 | Mohamed + Arena | Gated on step 1 |
+| 2 | Decide Option C vs Option D and write ADR-0008 | Mohamed + Arena | Gated on step 1 |
 | 3 | Choose the pilot domain (customer zero) | **Mohamed** | Proposal 0003 §5, Q1 — the factory's first deployment depends on it |
 | 4 | Confirm the commercial model (selling access vs. running operations) | **Mohamed** | Proposal 0003 §5, Q2 — decides whether per-user-style licensing is ever acceptable |
 
-**Nothing in this document authorises implementation.** Milestone 1 still waits on ADR-0002 and the pilot
+**Nothing in this document authorises implementation.** Milestone 1 still waits on ADR-0008 and the pilot
 domain decision.

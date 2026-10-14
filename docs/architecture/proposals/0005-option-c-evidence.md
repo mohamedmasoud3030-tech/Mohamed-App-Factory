@@ -8,7 +8,7 @@
 | Reviewers | Mohamed (product owner), ChatGPT (technical strategist) |
 | Scope | Finishes the measurements left outstanding by [proposal 0004](0004-option-c-results.md): M6 (Arabic documents), M8 (API ergonomics), M9 (upgrade rehearsal), M10 (per-tenant operations), plus the M1 completion case |
 | Raw evidence | [`tools/spikes/option-c/`](../../../tools/spikes/option-c/) — probes 4–6 and the rendered artifacts |
-| Feeds | [ADR-0008](../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt) — **a recommendation to Mohamed, not a decision taken here** |
+| Feeds | [ADR-0008](../../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt) — **a recommendation to Mohamed, not a decision taken here** |
 
 > **Method.** Every number below is a recorded output of a script in `tools/spikes/option-c/`, run
 > against a real Odoo 19.0 Community instance. Where a measurement **could not** be made, it is listed
@@ -125,6 +125,11 @@ Two operational requirements surfaced, both real and both cheap once known:
 2. **A font pair is required, not a font.** Noto Naskh Arabic has no Latin punctuation: the em dash in
    the invoice line text renders as a missing-glyph box in the artifact. Bilingual documents need fonts
    with overlapping coverage.
+
+> **Consolidation review note (2026-10-14).** The committed PNG shows correct Arabic *shaping* and
+> in-line ordering, but its *page layout is left-to-right*: paragraphs are left-aligned and the table's
+> first column (`البند`) sits on the left. It demonstrates shaping, not an RTL document layout. See
+> [ADR-0008 §10, C4](../../adr/0008-build-vs-adopt-ledger-substrate.md).
 
 ---
 
@@ -283,7 +288,7 @@ document layer needs work; and each tenant is a database whose upgrades cost mon
 
 That asymmetry points at a **narrow adoption behind a port**, not at either extreme, and it must be
 compared against at least one alternative platform before it is locked. The reasoning, the criteria and
-the explicit conditions are in [ADR-0008](../adr/0008-build-vs-adopt-ledger-substrate.md).
+the explicit conditions are in [ADR-0008](../../adr/0008-build-vs-adopt-ledger-substrate.md).
 
 ---
 

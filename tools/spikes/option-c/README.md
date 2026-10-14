@@ -44,10 +44,18 @@ payment allocation, period locking, SQL reporting).
 
 ## Known limitations
 
-- No `wkhtmltopdf` in the environment, so PDF rendering (measurement M6) could not be tested at all.
+- ~~No `wkhtmltopdf` in the environment, so PDF rendering (measurement M6) could not be tested at all.~~
+  *Superseded:* Odoo's own PDF bytes remain unmeasured, but its HTML report direction was measured and an
+  independent PDF was rendered (proposal 0005 §3; see the layout caveat in ADR-0008 §10, C4).
 - No ETA API credentials, so live submission to the Egyptian Tax Authority was never attempted —
   only the presence and enforcement of the integration's checks could be verified.
-- Posting a fully ETA-configured invoice was **not achieved**; the required configuration surface was
-  identified but not completed within the spike.
+- ~~Posting a fully ETA-configured invoice was **not achieved**; the required configuration surface was
+  identified but not completed within the spike.~~ *Superseded:* probe 4 posts a fully configured invoice
+  with zero validation errors (proposal 0005 §2).
 - The probes use undocumented Odoo internals (ORM field names, raw SQL). They are evidence, not a
   supported interface.
+- M9 (upgrade 18 → 19) and M10 (per-tenant operations) have **no committed probe script**; their results in
+  proposal 0005 §5–§6 are recorded observations.
+- Credentials in the probes (`admin`/`admin`, `odoo`/`odoo`) are defaults of a throwaway local spike
+  instance reached on `127.0.0.1` or a Unix socket. They are not real credentials and must never be reused.
+

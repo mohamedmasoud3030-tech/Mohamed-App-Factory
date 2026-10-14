@@ -1,4 +1,4 @@
-# ADR-0001 — Arabic and RTL are first-class requirements, English remains the repository language
+# ADR-0009 — Arabic and RTL are first-class requirements, English remains the repository language
 
 - Status: **Accepted**
 - Date: 2026-10-13

@@ -6,7 +6,7 @@
 - Supersedes: — · Superseded by: —
 
 > **Numbering.** Mohamed refers to this decision as "ADR-0002". On `main`, ADR-0002 is the tenancy
-> decision, so this lands as **ADR-0008** — see the numbering note in [`README.md`](README.md).
+> decision, so this lands as **ADR-0008** — see the index in [`docs/DECISIONS.md`](../DECISIONS.md) and §10.
 > Accepted ADRs are immutable; the resolution is a renumber, never an edit.
 >
 > **Status discipline.** This ADR is `Proposed`. Nothing here is decided, and nothing in this
@@ -38,9 +38,9 @@ Evidence available today:
 
 | Source | What it established |
 | --- | --- |
-| [Proposal 0002](0002-open-source-reuse-audit.md) | The open-source reuse landscape, licence positions and gaps |
-| [Proposal 0004](0004-option-c-results.md) | Option C spike, first pass: ledger behaviour, correction model, reporting coupling |
-| [Proposal 0005](0005-option-c-evidence.md) | **The completed measurements**: ETA invoice posting, Arabic documents, API ergonomics, the 18→19 upgrade rehearsal, per-tenant operations |
+| [Proposal 0002](../architecture/proposals/0002-open-source-reuse-audit.md) | The open-source reuse landscape, licence positions and gaps |
+| [Proposal 0004](../architecture/proposals/0004-option-c-results.md) | Option C spike, first pass: ledger behaviour, correction model, reporting coupling |
+| [Proposal 0005](../architecture/proposals/0005-option-c-evidence.md) | **The completed measurements**: ETA invoice posting, Arabic documents, API ergonomics, the 18→19 upgrade rehearsal, per-tenant operations |
 | [Review 0001](../reviews/0001-nile-engines-db-auth-review.md) | The Nile engines as they actually are: storage primitives done, integration not started |
 
 Standing constraint from Mohamed: **no application code is written until this decision is reviewed.**
@@ -194,7 +194,7 @@ works. Measuring at least one alternative before the component is final.
 | # | Question | Blocks |
 | --- | --- | --- |
 | 1 | Is the one-candidate comparison acceptable, or should ERPNext be measured first? | Finalising the component (not the structure) |
-| 2 | Which tenancy topology — per-tenant database or single database with RLS? | Coupled to option B vs C; `main`'s ADR-0002 leaves it open |
+| 2 | Which tenancy topology — per-tenant database or single database with RLS? | Coupled to option B vs C. `main`'s ADR-0002 decides a shared database for Milestone 1; the post-Milestone-1 topology and the external ledger's own topology remain open (§10, C3) |
 | 3 | Financial reporting: MIS Builder (AGPL-3) or build? | A hosted product needs a licence position before this ships |
 | 4 | Who owns ETA credential handling and the eSeal certificate operationally? | The last unmeasured mile in proposal 0005 §7 |
 
@@ -213,3 +213,22 @@ Reopen this ADR when **any** of the following occurs:
 **Do not** reopen it merely because a later spike makes Odoo look better or worse in isolation: the
 structure recommended here — own the product, rent the regulated core, hold the boundary — is designed
 to survive that.
+
+---
+
+## 10. Consolidation addendum (2026-10-14)
+
+Added when this Proposed ADR was landed on `main`'s history (branch `docs/consolidate-option-c-evidence`,
+from `ebcfe72`). The original text is preserved at commit `e61cd06` of
+`arena/bfcb5ed1-mohamed-app-factory`. The recommendation in §6 is **unchanged** and the status remains
+**Proposed**. The corrections below are factual; none of them decides anything.
+
+| # | Statement in this ADR | Correction | Evidence |
+| --- | --- | --- | --- |
+| C1 | Review 0001: "storage primitives done, integration not started" (§1) | True of the reviewed commit `0811ae0` only. PR #3 (`ebcfe72`) added Better Auth, the request→tenant path, role checks, generated migrations and a persisted sale; PR #4 (open) fixes review 0001's H4 (editable audit log) | `docs/reviews/2026-10-14-engines-db-auth-review.md`; disposition table in `docs/architecture/README.md` |
+| C2 | "Standing constraint: no application code is written until this decision is reviewed" (§1, §7) | Conflicts with later direction: Mohamed set an engines-first plan and merged PRs #1–#3. Surfaced as decision **D1** in proposal 0006, not resolved here | Merge history of `main` |
+| C3 | "`main`'s ADR-0002 leaves [tenancy topology] open" (§8 Q2) | ADR-0002 (Accepted) decides a shared PostgreSQL database with enforced tenant scope for Milestone 1 and rules out database-per-tenant for it; ADR-0005 makes RLS the boundary. Open: topology after Milestone 1, and how an external ledger lays out its tenants | `docs/adr/0002-…`, `docs/adr/0005-…` |
+| C4 | "an independent render proves a shaped RTL Arabic PDF is achievable" (proposal 0005 §3.4) | The committed PNG shows correct Arabic **shaping** and in-line ordering, but a **left-to-right page layout**: paragraphs are left-aligned and the table's first column (`البند`) is on the left. RTL page layout is therefore **not** demonstrated by this artifact | `tools/spikes/option-c/artifacts/arabic_invoice_probe.png` |
+| C5 | M9 (upgrade) and M10 (per-tenant operations) are reported as measured | No probe script for M9 or M10 is committed. The results are recorded observations, not reproducible from the repository | `tools/spikes/option-c/` contents |
+| C6 | Localization ADR planned as ADR-0007 (review 0001 §4; branch ADR index) | `main`'s ADR-0007 is now the roles ADR, so the localization ADR landed as **ADR-0009** | `docs/DECISIONS.md` |
+

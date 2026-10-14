@@ -10,6 +10,13 @@
 | Depends on | `0001-platform-strategy.md` |
 | Evidence collected | 2026-10-13 (GitHub API metrics, repository source trees, license files, market research) |
 
+> **Numbering key (added on consolidation, 2026-10-14).** This document was written on a branch whose
+> ADR numbers collided with `main`. Citations to decisions that now exist on `main` have been updated:
+> localization → **ADR-0009** (originally ADR-0001), build vs. adopt → **ADR-0008** (originally ADR-0002).
+> Other branch-era labels refer to records never created on `main`: "ADR-0003 (first application)" is
+> pending; "ADR-0004 (tenancy)" is not needed because `main`'s ADR-0002 and ADR-0005 decide it. The
+> unmodified original is at commit `e61cd06`; provenance in [docs/architecture/README.md](../README.md).
+
 > **Method.** Every candidate was evaluated against primary evidence, not reputation: license files were
 > read directly, repository metrics came from the GitHub API on 2026-10-13, and the presence or absence
 > of specific modules was verified against the actual source trees. Where a claim could not be verified,
@@ -297,7 +304,7 @@ Four reasons, in order of weight:
 | Getting it wrong anyway | Hire/consult a local accountant **and** an ETA integration specialist during Milestone 1 — cheaper than any platform licence | Small, fixed |
 
 **Net position:** the compliance argument justifies adopting *components and providers*, and justifies
-making RTL a first-class architectural constraint from day one (recorded as ADR-0001). It does not justify
+making RTL a first-class architectural constraint from day one (recorded as ADR-0009). It does not justify
 adopting a platform.
 
 ---
@@ -467,7 +474,7 @@ requirements, and gives a real accountant and a real property manager something 
 | P2 | Written stack comparison + ADR-0002 (deferred deliberately: the RTL requirement and this audit change its inputs, so deciding it earlier would have been wasted work). Includes the MUI/Ant Design vs shadcn/Tailwind RTL decision and the Refine adoption | ChatGPT + Arena | Milestone 0 |
 | P3 | **ETA spike** — one bounded investigation with a certified Egyptian provider/SDK: can e-invoice submission sit behind an `EInvoicingProvider` port in weeks? This is the trigger for Option C | Arena | Milestone 1 |
 | P4 | Legal review of the Odoo/ERPNext derivative-work question — **only if** we pursue Option A, B, or C. Not required for Option D | Mohamed | Conditional |
-| P5 | ADR-0002 (build vs adopt), ADR-0003 (first application), ADR-0004 (tenancy) after P1 | Arena | Milestone 0 |
+| P5 | ADR-0008 (build vs adopt), ADR-0003 (first application), ADR-0004 (tenancy) after P1 | Arena | Milestone 0 |
 
 **Explicitly not started:** any implementation, any repository scaffolding. Per Mohamed's instruction, the
 first-application decision is reviewed before implementation begins.

@@ -21,3 +21,10 @@ Two honest defects visible in the PyMuPDF artifact:
 2. It shows `مسودة` (draft), because the invoice is never posted in this spike —
    posting is gated by the ETA configuration checks measured in probe 4, and report
    rendering works on a draft. `invoice_name` is only assigned on posting.
+
+> **Consolidation review note (2026-10-14).** Verified against the files: `odoo_invoice_report.html` has
+> `lang="en-US"` and no `dir="rtl"`; `odoo_invoice_report_ar.html` and `odoo_invoice_report_ar_userlang.html`
+> both have `lang="ar-001"` **and** `dir="rtl"` and are otherwise identical, so the description of
+> `odoo_invoice_report_ar.html` above is inaccurate. All three contain the same 245 Arabic characters. The
+> PNG shows correct shaping but a left-to-right page layout (ADR-0008 §10, C4).
+

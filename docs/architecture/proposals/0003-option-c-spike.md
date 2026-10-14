@@ -7,8 +7,15 @@
 | Author | Arena (implementation / architecture agent) |
 | Reviewers | Mohamed (product owner), ChatGPT (technical strategist) |
 | Scope | Define and bound the investigation of Option C: a permissively-licensed ERP owns the ledger and statutory compliance; our own TypeScript layer owns the domain and the user experience |
-| Depends on | [`0002-open-source-reuse-audit.md`](0002-open-source-reuse-audit.md) · [`docs/adr/0001`](../../adr/0001-localization-arabic-rtl-first.md) |
-| Decides | ADR-0002 (build vs. adopt) and the shape of Milestone 1 |
+| Depends on | [`0002-open-source-reuse-audit.md`](0002-open-source-reuse-audit.md) · [`docs/adr/0009`](../../adr/0009-localization-arabic-rtl-first.md) |
+| Decides | ADR-0008 (build vs. adopt) and the shape of Milestone 1 |
+
+> **Numbering key (added on consolidation, 2026-10-14).** This document was written on a branch whose
+> ADR numbers collided with `main`. Citations to decisions that now exist on `main` have been updated:
+> localization → **ADR-0009** (originally ADR-0001), build vs. adopt → **ADR-0008** (originally ADR-0002).
+> Other branch-era labels refer to records never created on `main`: "ADR-0003 (first application)" is
+> pending; "ADR-0004 (tenancy)" is not needed because `main`'s ADR-0002 and ADR-0005 decide it. The
+> unmodified original is at commit `e61cd06`; provenance in [docs/architecture/README.md](../README.md).
 
 ---
 
@@ -48,7 +55,7 @@ requirements evolve and non-compliance is fined. My original estimate of "weeks,
 | --- | --- |
 | Purpose: **both** — a product for external customers, with his own companies as customer zero | Differentiation still matters (product), but the first deployment is internal, where total cost of ownership matters more than differentiation |
 | **No external customers lined up yet** | The near-term value is an internal system that works; a 12-month platform build cannot be justified by a product with no validated demand |
-| Arabic + RTL required (ADR-0001), Egypt compliance in scope | The compliance layer is not a future concern — it is a day-one requirement |
+| Arabic + RTL required (ADR-0009), Egypt compliance in scope | The compliance layer is not a future concern — it is a day-one requirement |
 
 ### 1.2 Revised scoring, stated honestly
 
@@ -168,7 +175,7 @@ Stated as capabilities with semantics, not as code:
 | 1 | Install and configure stock Odoo Community with the Egyptian localization; enable Arabic; **confirm no Enterprise feature is required for the invoice-to-payment flow**; confirm the external API works and document exactly how (JSON-RPC vs XML-RPC) | A working stock instance + notes |
 | 2 | Drive it from outside Odoo, from a throwaway TypeScript script: ensure partner → issue invoice → verify ETA submission path and QR/UUID handling → record a partial payment → record the balance → attempt a post into a closed period (expect refusal) → retry the same invoice twice (**expect exactly one invoice**) → void by reversal | Measurement table rows filled with pass/fail, not opinion |
 | 3 | Arabic invoice PDF quality check (render, inspect, compare against ETA content requirements); read-only reporting test (can we reconstruct trial balance, AR aging and a per-tenant statement from the database/API?); measure upgrade cost on a stock system with zero custom code; sketch the per-tenant operations model | Measurement table completed + operations sketch |
-| 4 | Write the report: measured results, unresolved unknowns, recommendation, and the ADR | `0004-option-c-results.md` + ADR-0002 |
+| 4 | Write the report: measured results, unresolved unknowns, recommendation, and the ADR | `0004-option-c-results.md` + ADR-0008 |
 
 ### 3.3 Measurements and pass criteria
 
@@ -179,7 +186,7 @@ Stated as capabilities with semantics, not as code:
 | M3 | Idempotency: same invoice submitted twice | Exactly one document | Our scheduler may retry; duplication in a ledger is unacceptable |
 | M4 | Closed-period posting refused | Refused with a clear error | We must be able to rely on the ledger's integrity guarantees |
 | M5 | Reversal-only correction path | Reversal, never delete | Audit integrity (proposal 0001, C5) |
-| M6 | Arabic invoice PDF renders correctly | Correct RTL, fonts, and bidi; required fields present | Hard requirement per ADR-0001 |
+| M6 | Arabic invoice PDF renders correctly | Correct RTL, fonts, and bidi; required fields present | Hard requirement per ADR-0009 |
 | M7 | Reporting reconstruction from read-only access | Trial balance + AR aging + tenant statement reproducible | Replaces Enterprise `account_reports` **without** AGPL |
 | M8 | External API ergonomics for a TS caller | Documented, workable without generated clients | Determines whether the port stays thin |
 | M9 | Upgrade rehearsal on stock + zero custom code | One version upgrade completed without code changes | Quantifies the maintenance tax |
