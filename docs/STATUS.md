@@ -22,7 +22,7 @@ Update it in the same PR as any change that alters what is below. Do not create 
 | Ref | Head | State | Notes |
 | --- | --- | --- | --- |
 | PR #4 `fix/nile-gate-ledger-append-only-demo-lock` | `784e50c` (base `ebcfe72`) | **OPEN, not merged**; 0 GitHub reviews | Fixes G-1, G-2. **Limitation: the only review is by the PR's author** ([APPROVE, author re-review](reviews/2026-10-14-pr4-review.md)); no independent reviewer was available. Known gaps, not merge blockers: 3 of the 8 locked demo paths (change-email, delete-user, revoke-session) have no committed test (P4-1); tables added later inherit UPDATE/DELETE for `nile_app` unless their migration revokes it (P4-4). Review-request text for the owner: [review §5](reviews/2026-10-14-pr4-review.md#5-independent-review-request-text-for-the-owner-to-post). **Merge needs the owner's authorisation** |
-| `fix/g7-runtime-role-assertion` | `420c203` (base `ebcfe72`) | **LOCAL ONLY: not pushed, no PR** (no GitHub credentials in the agent environment) | Fixes G-7 (code + tests, one commit). Handoff: `g7-runtime-role-assertion.bundle` and a patch, verified to reproduce `420c203` on a fresh clone of `main`. Independent of PR #4 and of this docs branch |
+| `fix/g7-runtime-role-assertion` | `60342be` (base `ebcfe72`) | **LOCAL ONLY: not pushed, no PR** (no GitHub credentials in the agent environment) | Fixes G-7 (code + tests). 2 commits: `420c203` initial fix; `60342be` closes 5 gaps found by reviewing it (login owning the database, extra grants, `pg_write_all_data`, NOINHERIT reach, a wrong `LIKE` escape). Handoff: `g7-runtime-role-assertion.bundle` and 2 patches, verified to reproduce `60342be` on a fresh clone of `main`. Independent of PR #4 and of this docs branch |
 | `docs/source-of-truth-cleanup` | see its PR | Documentation cleanup (this file, `AGENTS.md`, ADR-0010, evidence consolidation) | Based on `ebcfe72`. Contains the three Odoo-evidence consolidation commits `d81cf97`, `bf23dad`, `ce6f328` |
 | `arena/bfcb5ed1-mohamed-app-factory` | `e61cd06` | Odoo evaluation branch; **HISTORICAL evidence, never merge wholesale** | Forked at `bb0cb4f`, 16 commits behind `main`. Its relevant files are imported (with provenance) by the cleanup branch. Keep the branch |
 | `arena/01a06b01-…`, `feat/nile-engines-v1`, `feat/nile-engines-wave2-db`, `feat/nile-e2e-auth-sale` | `e74167b`, `3916924`, `949228f`, `b602a57` | **MERGED IN `main`** (each is an ancestor of `ebcfe72`) | Proposed for deletion; needs owner approval (see the cleanup inventory) |
@@ -51,7 +51,7 @@ Update it in the same PR as any change that alters what is below. Do not create 
 | # | Task | Status | Gate |
 | --- | --- | --- | --- |
 | 1 | Owner reviews and authorises: PR #4 merge; the cleanup PR; the deletion proposals | WAITING ON OWNER | — |
-| 2 | **G-7:** fail explicitly unless the runtime role is exactly `nile_app`; tests for a wrong login | **IMPLEMENTED ON BRANCH** `fix/g7-runtime-role-assertion` `420c203`; NOT PUSHED; needs owner push, PR and review | Done: PGlite + real-PostgreSQL 18.4 tests (100/100 with PG, 93 + 7 skipped without); mutation-checked; API smoke on real PostgreSQL |
+| 2 | **G-7:** fail explicitly unless the runtime role is exactly `nile_app`, and refuse a runtime login that could gain anything `nile_app` lacks; tests for wrong logins | **IMPLEMENTED ON BRANCH** `fix/g7-runtime-role-assertion` `60342be`; NOT PUSHED; needs owner push, PR and independent review | Done: 6 PGlite + 14 real-PostgreSQL 18.4 tests (111/111 with PG; 97 + 14 skipped without); 14/14 mutants caught; API smoke on real PostgreSQL; simulated merge with PR #4: 115/115 |
 | 2a | **N-1:** add a pool `error` listener in `openPostgres` (log and let the pool replace the client) with a real-PostgreSQL test that terminates an idle connection | PROPOSED: the next unblocked engine task (no migration) | Separate branch from `main`; not part of G-7 |
 | 3 | Payment engine per [proposal 0007](architecture/proposals/0007-payment-engine.md) (tests first; real-PG concurrency tests) | BLOCKED BY PR #4 merge | New branch from the then-current `main` |
 | 4 | G-4 CHECK constraints; G-10 booking `EXCLUDE` constraint | BLOCKED BY PR #4 merge | Migration numbering: PR #4 owns `0002`; generate new migrations only after it merges |
@@ -75,7 +75,7 @@ IDs: **G-n** = [post-merge security gate](reviews/2026-10-14-post-merge-security
 | G-4 (= H7) | Medium | No CHECK constraints on money, quantity and enum columns | OPEN (task 4). Required before public exposure |
 | G-5 | Medium | Dev mode trusts any origin; per-boot secret; insecure cookies; no rate limit | OPEN: deployment configuration. Required before public exposure |
 | G-6 | Low | Origin/CSRF checks are skipped under `NODE_ENV=test` | OPEN |
-| G-7 | Low | Unawaited `SET ROLE` (a wrong login exits through unhandled rejections); the assertion accepts any non-bypass role, including a table-owning login; `RESET ROLE` reverts to the login (verified 2026-10-14 on PostgreSQL 18.4 at `ebcfe72`) | FIXED ON BRANCH `fix/g7-runtime-role-assertion` `420c203` (local only); OPEN on `main` |
+| G-7 | Low | Unawaited `SET ROLE` (a wrong login exits through unhandled rejections); the assertion accepts any non-bypass role, including a table-owning login; `RESET ROLE` reverts to the login (verified 2026-10-14 on PostgreSQL 18.4 at `ebcfe72`) | FIXED ON BRANCH `fix/g7-runtime-role-assertion` `60342be` (local only); OPEN on `main` |
 | G-8 | Low | A failed `set-active` clears the caller's own active org | OPEN (fail-closed) |
 | G-9 | Low | Idempotency keys are per tenant, not per user | OPEN (document) |
 | G-10 (= H9) | Low | Booking overlap not enforced by the database | OPEN (task 4); before any booking API |
@@ -92,7 +92,7 @@ IDs: **G-n** = [post-merge security gate](reviews/2026-10-14-post-merge-security
 
 1. Merge PR #4, ideally after a second, independent reviewer (post the request text in
    [review §5](reviews/2026-10-14-pr4-review.md#5-independent-review-request-text-for-the-owner-to-post)).
-2. Push `fix/g7-runtime-role-assertion` (`420c203`) from the handoff bundle and open its PR; review it
+2. Push `fix/g7-runtime-role-assertion` (`60342be`) from the handoff bundle and open its PR; review it
    independently of PR #4.
 3. Merge the documentation cleanup PR.
 4. Delete the four merged branches listed in §2, if wanted (optional; GitHub keeps PR refs).
