@@ -3,7 +3,8 @@
 > **Status: HISTORICAL evidence (repository copy, added 2026-10-14).** Verification of `main` at `ebcfe72`.
 > It is the source of the gate finding IDs **G-1…G-15** used in [`docs/STATUS.md`](../STATUS.md). These are
 > unrelated to the golden example IDs `G-n` inside `engines/transactions`, which come from the source
-> repository. Live status of each finding is tracked in `docs/STATUS.md`, not here.
+> repository. The parenthetical `(Hn)` labels in §3 are this gate's own hypothesis numbers, **not** the
+> H-n findings of review 0001. Live status of each finding is tracked in `docs/STATUS.md`, not here.
 >
 > Edits from the author's local report, all listed here: sandbox paths removed; §4's stale "Not merged and
 > not pushed" corrected to the verified state; §7's owner-only operational steps (credential revocation,

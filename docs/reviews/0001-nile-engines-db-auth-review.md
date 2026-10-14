@@ -14,7 +14,9 @@
 
 > **Consolidation note (2026-10-14).** Historical review of `0811ae0` (PR #2), imported unchanged except
 > for this note and one link fix. Most findings were fixed by PR #3 (`ebcfe72`); H4 is fixed by PR #4
-> (open). Per-finding status on current `main`: [docs/architecture/README.md](../architecture/README.md).
+> (open). Per-finding status on current `main`: [docs/architecture/README.md](../architecture/README.md);
+> live register: [docs/STATUS.md](../STATUS.md) §6. Overlapping review of the same code on `main`:
+> [2026-10-14-engines-db-auth-review.md](2026-10-14-engines-db-auth-review.md).
 > The renumbering plan in §4 is superseded: the localization ADR landed as **ADR-0009**, because `main`'s
 > ADR-0007 is now the roles ADR. The probe applies `engines/db/migrations/0001_nile_engines.sql`, which no
 > longer exists on `main`; it reproduces only at `0811ae0`.

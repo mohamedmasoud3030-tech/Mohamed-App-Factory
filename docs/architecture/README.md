@@ -22,7 +22,9 @@ imported verbatim in one commit (`d81cf97`), then reconciled in a second commit 
 | [proposals/0003](proposals/0003-option-c-spike.md) | Spike plan: what to measure and the pass/fail criteria | Plan |
 | [proposals/0004](proposals/0004-option-c-results.md) | Round-1 spike results | Partly superseded by 0005 |
 | [proposals/0005](proposals/0005-option-c-evidence.md) | Round-2 measurements M1, M6, M8, M9, M10 | Main evidence; §3.4 carries a review note |
+| [ADR-0010](../adr/0010-engines-continue-behind-ledger-provider-port.md) | Owner's D1: engines continue; ledger only behind a provider-neutral port | Accepted |
 | [proposals/0006](proposals/0006-ledger-decision-memo.md) | Decision memo: viability, boundary, topology, ETA responsibility, owner decisions | Proposed |
+| [proposals/0007](proposals/0007-payment-engine.md) | Payment engine design (Nile-owned, provider-neutral) | Proposed; implementation gated on the PR #4 merge |
 | [reviews/0001](../reviews/0001-nile-engines-db-auth-review.md) | Review of the engines at `0811ae0` (before PR #3) | Historical; see §5 |
 | [`tools/spikes/option-c/`](../../tools/spikes/option-c/README.md) | Probe scripts (Python / Node) and output artifacts | Reproducible only against a throwaway local Odoo 19 CE |
 | [`tools/spikes/nile-review/`](../../tools/spikes/nile-review/probe-db-findings.mjs) | Probe for review 0001 | Reproduces only at `0811ae0` |
@@ -74,8 +76,9 @@ imported verbatim in one commit (`d81cf97`), then reconciled in a second commit 
 
 - ADR-0008 §6: Option C (Odoo behind a `LedgerProvider` port) **only if** a paid pilot with live ETA
   passes, Odoo's own RTL Arabic PDF passes, the upgrade cost is accepted, and an alternative is measured.
-- Consolidation (proposal 0006): keep Nile's operational engines independent of this choice, and design
-  the payment engine as Nile-owned, with a provider-neutral outbox.
+- Consolidation (proposal 0006): keep Nile's operational engines independent of this choice. **Accepted
+  on 2026-10-14 as [ADR-0010](../adr/0010-engines-continue-behind-ledger-provider-port.md)** (owner's D1).
+  The payment engine is designed as Nile-owned ([proposal 0007](proposals/0007-payment-engine.md)).
 
 ## 3. Provenance of imported files
 
@@ -129,8 +132,11 @@ original bytes.
 
 ## 5. Review 0001 disposition on current `main` (`ebcfe72`)
 
-Review 0001 reviewed `0811ae0` (PR #2). Its findings map onto the later gate review
-(`docs/reviews/2026-10-14-engines-db-auth-review.md`) as follows. "Fixed" means the code changed and the
+Review 0001 reviewed `0811ae0` (PR #2). Its findings were addressed by PR #3, which followed the engines
+review [`2026-10-14-engines-db-auth-review.md`](../reviews/2026-10-14-engines-db-auth-review.md) (finding
+IDs F-n), and are cross-referenced below to the
+[post-merge security gate](../reviews/2026-10-14-post-merge-security-gate.md) (finding IDs G-n). Live
+status of every open finding: [`docs/STATUS.md`](../STATUS.md) §6. "Fixed" means the code changed and the
 relevant test exists. It does not mean the system is production ready.
 
 | Finding | Summary | Status |
