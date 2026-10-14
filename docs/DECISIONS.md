@@ -1,7 +1,8 @@
 # Decisions
 
-This is the index of Architecture Decision Records (ADRs). ADRs are immutable:
-once accepted they are superseded by newer ADRs, never edited.
+This is the index of Architecture Decision Records (ADRs). Accepted ADRs are immutable:
+once accepted they are superseded by newer ADRs, never edited. Proposed ADRs may be revised.
+Known gaps between accepted ADRs and the code are listed in [ARCHITECTURE.md](ARCHITECTURE.md) §3.
 
 | ADR | Title | Status | Date |
 |---|---|---|---|
@@ -14,6 +15,7 @@ once accepted they are superseded by newer ADRs, never edited.
 | [0007](adr/0007-roles-and-permissions-via-better-auth-access-control.md) | Roles and permissions via Better Auth access control | Accepted | 2026-10-14 |
 | [0008](adr/0008-build-vs-adopt-ledger-substrate.md) | Build vs. adopt: how the factory obtains its regulated core (ledger) | **Proposed** — awaiting Mohamed's decision | 2026-10-14 |
 | [0009](adr/0009-localization-arabic-rtl-first.md) | Arabic and RTL are first-class requirements; English remains the repository language | Accepted | 2026-10-13 |
+| [0010](adr/0010-engines-continue-behind-ledger-provider-port.md) | Engine development continues; accounting is reached only through a provider-neutral port | Accepted | 2026-10-14 |
 
 ## Numbering notes
 

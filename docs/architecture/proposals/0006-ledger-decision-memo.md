@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| Status | **Proposed**. For the owner's decision; this memo decides nothing |
+| Status | **Proposed**. D1 was decided on 2026-10-14 ([ADR-0010](../../adr/0010-engines-continue-behind-ledger-provider-port.md)); D2–D4 remain open. The memo itself decides nothing |
 | Date | 2026-10-14 |
 | Question | [ADR-0008](../../adr/0008-build-vs-adopt-ledger-substrate.md) (build vs. adopt the regulated core) |
 | Evidence | [index and provenance](../README.md); [proposal 0005](0005-option-c-evidence.md) |
@@ -168,7 +168,7 @@ back-office accounting.
 
 | # | Decision | Options | Recommendation | Blocks |
 | --- | --- | --- | --- | --- |
-| D1 | Does engine work continue while ADR-0008 is open? ADR-0008 says "no application code until reviewed"; the later engines-first direction and PRs #1–#3 did the opposite | (a) continue engines, ledger stays behind the port; (b) pause all code | (a). The engines are provider-independent | The payment engine, after PR #4 |
+| D1 | Does engine work continue while ADR-0008 is open? ADR-0008 says "no application code until reviewed"; the later engines-first direction and PRs #1–#3 did the opposite | (a) continue engines, ledger stays behind the port; (b) pause all code | **DECIDED 2026-10-14: (a)**, approved by the owner and recorded as [ADR-0010](../../adr/0010-engines-continue-behind-ledger-provider-port.md) | The payment engine, after PR #4 |
 | D2 | Is one measured candidate enough to choose? | (a) choose from Odoo's evidence; (b) time-box an ERPNext measurement with the same probes first | (b), with a fixed time box | Ratifying ADR-0008 |
 | D3 | Who owns ETA credentials and signing, and will a real taxpayer run a paid preproduction pilot (e-invoice **and** e-receipt)? | Customer-held / Nile-operated / mixed; pilot yes or no, and which business | Customer holds credentials and signing device; Nile operates the integration; one consenting pilot business | Any live-tax claim in sales material |
 | D4 | Budget and licence posture for the ledger | Accept recurring upgrade cost; reporting via Enterprise, MIS Builder (legal review) or built by Nile | Decide after the pilot; get a legal opinion before choosing MIS Builder | Commercial launch with accounting |
