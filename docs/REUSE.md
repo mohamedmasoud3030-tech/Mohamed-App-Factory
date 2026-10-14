@@ -43,15 +43,15 @@ not a company asset) and `Test` (457-line experiment with tracked ZIPs).
 
 > Extraction history only. The canonical roadmap and task status is [`STATUS.md`](STATUS.md).
 
-1. ~~DB layer per engine~~ — DONE: Drizzle schemas → generated migrations
+1. ~~DB layer per engine~~ — MERGED IN `main` (PR #2): Drizzle schemas → generated migrations
    (`engines/db/migrations/`, RLS, composite tenant FKs, runtime role),
    patterns from `bug-free-garbanzo/db/migrations/0002-0005`; proven by
    PGlite RLS tests running as a non-superuser runtime role. Delegated
    permissions from `starting` migration 0079 remain for the API phase.
-2. ~~Auth~~ — DONE: Better Auth + Organization plugin (ADR-0005), roles via
+2. ~~Auth~~ — MERGED IN `main` (PR #3): Better Auth + Organization plugin (ADR-0005), roles via
    Better Auth access control (ADR-0007), demo accounts provisioned on boot.
    Daily demo-data reset job still pending.
-3. API service: first slice DONE (`apps/api`: auth, me, catalog, sales, OpenAPI).
+3. API service: first slice MERGED IN `main` (PR #3; `apps/api`: auth, me, catalog, sales, OpenAPI).
    Still to adopt: `platform` repo's
    `lib/api-zod` + `tools/verify-*` + `pnpm-workspace.yaml` supply-chain
    hardening when the workspace moves to Nx + pnpm (ADR-0001).
