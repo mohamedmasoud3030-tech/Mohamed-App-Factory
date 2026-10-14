@@ -6,6 +6,11 @@ or (b) newly written generic code whose patterns are credited below.
 Excluded by design: `teste` (third-party MIT template by JCodesMore — a tool,
 not a company asset) and `Test` (457-line experiment with tracked ZIPs).
 
+> **Citations inside extracted files** (`docs/adr/000N-…`, `docs/FINANCIAL_RULES.md`, `ADR-000N`, `D32`,
+> golden `G-n`, defect `D17`) refer to the **source repository** listed below, not to this repository. This
+> repository's decisions are only those indexed in [`DECISIONS.md`](DECISIONS.md). The source documents are
+> not copied here.
+
 ## Extracted verbatim (provenance header inside each file)
 
 | Nile file | Source repo / path |
@@ -35,6 +40,8 @@ not a company asset) and `Test` (457-line experiment with tracked ZIPs).
 | `engines/people/src/payroll.ts`, `engines/catalog/src/catalog.ts` (rest) | Domain rules from the Nile benchmark brief (HR tasks, variant stock states, installment calculators, lead pipeline) |
 
 ## Not yet extracted (next phases, in order)
+
+> Extraction history only. The canonical roadmap and task status is [`STATUS.md`](STATUS.md).
 
 1. ~~DB layer per engine~~ — DONE: Drizzle schemas → generated migrations
    (`engines/db/migrations/`, RLS, composite tenant FKs, runtime role),
