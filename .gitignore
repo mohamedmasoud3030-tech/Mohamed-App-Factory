@@ -16,3 +16,6 @@ dist/
 # نسخ احتياطية محلية
 *.tar.gz
 !docs/**/*.tar.gz
+node_modules/
+.local/
+*.tsbuildinfo
