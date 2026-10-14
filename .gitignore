@@ -19,3 +19,13 @@ dist/
 node_modules/
 .local/
 *.tsbuildinfo
+
+# Local scratch, probes and credential-bearing files (never commit)
+.env
+.env.*
+!.env.example
+.scratch/
+.scratch-*/
+.probe/
+.list.mts
+*.bundle
