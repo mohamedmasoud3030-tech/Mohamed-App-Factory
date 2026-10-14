@@ -74,6 +74,19 @@ export async function openPostgres(opts: { url: string; migrationUrl?: string })
     }
   }
   const pool = new pg.Pool({ connectionString: opts.url });
+  // N-1: when PostgreSQL kills an idle pooled connection — a server restart, an
+  // administrator `pg_terminate_backend`, a provider recycling the backend —
+  // pg-pool purges that client and then emits 'error' on the pool. With no
+  // listener, that emit is an unhandled 'error' event and Node exits, so one
+  // idle connection being killed took the whole process down (57P01). Log it
+  // and let the pool replace the client. Log the code and message only: pg-pool
+  // sets `err.client`, which holds connectionParameters including the password.
+  pool.on('error', (err) => {
+    const code = (err as { code?: string }).code ?? 'no-code';
+    console.error(
+      `[nile:db] an idle PostgreSQL connection failed (${code}); the pool discarded it and will replace it: ${err.message}`,
+    );
+  });
   // Every pooled connection assumes the runtime role before first use.
   pool.on('connect', (c) => void c.query(`SET ROLE ${RUNTIME_ROLE}`));
   const db = drizzlePg(pool, { schema });
