@@ -78,13 +78,19 @@ export async function openPostgres(opts: { url: string; migrationUrl?: string })
   // administrator `pg_terminate_backend`, a provider recycling the backend —
   // pg-pool purges that client and then emits 'error' on the pool. With no
   // listener, that emit is an unhandled 'error' event and Node exits, so one
-  // idle connection being killed took the whole process down (57P01). Log it
-  // and let the pool replace the client. Log the code and message only: pg-pool
-  // sets `err.client`, which holds connectionParameters including the password.
+  // idle connection being killed took the whole process down (57P01).
+  //
+  // Log it and let the pool carry on. The replacement is LAZY, not eager:
+  // pg-pool's idle listener calls _remove() without a callback and never calls
+  // _pulseQueue(), and _pulseQueue() returns early when nothing is waiting —
+  // there is no minimum pool size. So after a kill the pool sits at
+  // totalCount 0 until the next request needs a connection, which then pays the
+  // connect + SET ROLE cost. Log the code and message only: pg-pool sets
+  // `err.client`, which holds connectionParameters including the password.
   pool.on('error', (err) => {
     const code = (err as { code?: string }).code ?? 'no-code';
     console.error(
-      `[nile:db] an idle PostgreSQL connection failed (${code}); the pool discarded it and will replace it: ${err.message}`,
+      `[nile:db] an idle PostgreSQL connection failed (${code}); the pool discarded it and will open a replacement on the next request: ${err.message}`,
     );
   });
   // Every pooled connection assumes the runtime role before first use.

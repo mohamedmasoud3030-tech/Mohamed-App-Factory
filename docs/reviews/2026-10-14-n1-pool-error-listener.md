@@ -30,21 +30,28 @@ already been closed & purged and is unusable."*
 
 ## 2. The change
 
-`engines/db/open.ts` — 13 added lines, nothing else:
+`engines/db/open.ts` — the added block, nothing else in the file changed:
 
 ```ts
 pool.on('error', (err) => {
   const code = (err as { code?: string }).code ?? 'no-code';
   console.error(
-    `[nile:db] an idle PostgreSQL connection failed (${code}); the pool discarded it and will replace it: ${err.message}`,
+    `[nile:db] an idle PostgreSQL connection failed (${code}); the pool discarded it and will open a replacement on the next request: ${err.message}`,
   );
 });
 ```
 
-Log the failure and let the pool replace the client. **The code and message only:** `pg-pool` sets
+Log the failure and let the pool carry on. **The code and message only:** `pg-pool` sets
 `err.client = client`, and that client holds `connectionParameters`, including the password. Logging or
 serialising the error object therefore prints the database credential in cleartext. This was not
 theoretical — see §4.
+
+**The replacement is lazy, not eager** (measured, see §5): `pg-pool`'s idle listener calls `_remove()`
+without a callback and never calls `_pulseQueue()`, and `_pulseQueue()` returns early when nothing is
+waiting — there is no minimum pool size. After a kill the pool sits at `totalCount` 0 until the next
+request needs a connection, which then pays the connect + `SET ROLE` cost. The replacement does come up
+correctly as `nile_app`. An earlier wording of this log line said the pool "will replace it", which
+implied an immediacy the code does not have; corrected in the follow-up commit (review finding D1).
 
 New files:
 
@@ -75,11 +82,11 @@ in whether the listener is removed, so the control exercises the shipped code pa
 Throwaway local clusters (`@embedded-postgres/linux-x64`), `--auth=trust` on 127.0.0.1, deleted after
 each run. No cloud resource, no existing project, no credential was requested or stored.
 
-The numbers below were produced from a **fresh clone with a clean `npm ci`**, not from a working tree.
-They were run against commit `433cdbd`; this commit's code blobs are byte-identical to that one
-(`engines/db/open.ts` `43f0289`, `pool-resilience.pg.test.ts` `3e52bd5`,
-`fixtures/pool-error-child.ts` `261d897`), so the results apply unchanged — only this document was
-edited afterwards.
+The numbers below were produced from a **fresh clone with a clean `npm ci`**, not from a working tree,
+and were **re-run after the D1/D2 correction commit** (which changes the log wording in `open.ts`); the
+re-run results are the ones reported. The originally verified commit was `433cdbd`, whose test and
+fixture blobs (`pool-resilience.pg.test.ts` `3e52bd5`, `fixtures/pool-error-child.ts` `261d897`) are
+still byte-identical here.
 
 ```
 npx tsc --noEmit
@@ -111,18 +118,37 @@ code-and-message-only rule in §2.
 
 ### Mutation testing
 
-| Mutation | Expected | Result |
-| --- | --- | --- |
-| M1 — remove the `error` listener entirely | tests fail | **KILLED** — 4 failed / 1 passed (the pre-fix run above) |
-| M2 — log the whole error object (`console.error(msg, err)`) | the password test fails | **KILLED** — test 3 failed, 4 passed |
+Run in a throwaway copy outside the repository, so the reviewed tree was never modified.
 
-M2 matters: without it, test 3's `not.toContain(password)` assertion could have passed vacuously.
+| Mutation | Result | Which assertion died |
+| --- | --- | --- |
+| M1 — remove the `error` listener entirely | **KILLED** — 4 failed / 1 passed | `:148` `listenerCount === 0`, then tests 2–3 |
+| M2 — log the whole error object (`console.error(msg, err)`) | **KILLED** — 1 failed / 4 passed | **`:187`**, the "expected a 57P01 log line" check |
+| M3 — log the password as a *string*, keeping `57P01` present | **KILLED** — 1 failed / 4 passed | **`:189`**, `not.toContain(password)` |
+
+**Correction to this record (2026-10-14, review pass).** This section originally credited M2 with proving
+that the credential assertion at `:189` has teeth. It does not. Under M2 the harness renders the error
+argument as `<object>` (line `:184`), so the password never enters the captured log text, and the test
+fails earlier at `:187` because `err.message` — and therefore `57P01` — is no longer logged. Execution
+never reaches `:189`, which would have passed **vacuously**.
+
+M3 was added to close that gap: it logs the password as a plain string while keeping `57P01` present, so
+`:187` passes and `:189` is actually exercised. It fails at `:189` with the throwaway password named in
+the assertion message. **The credential assertion does have teeth — M3 proves it, not M2.**
 
 ### Secret scan
 
-GitHub/OpenAI/AWS/JWT/private-key/connection-string-with-password patterns over the three changed files:
-**0 matches**. Positive control: 1/1 synthetic strings matched. The role password is generated with
-`randomBytes` per run and never written to a file.
+GitHub/OpenAI/AWS/JWT/private-key/connection-string-with-password patterns, run over the **exported
+committed tree** (111 files) as well as the changed files: **0 matches**.
+
+Positive control: the original run matched 1/1 synthetic strings. A stronger control was run during the
+review pass — 6 patterns (`github_pat_`, `ghp_`, RSA/EC/OpenSSH private key, `AKIA`, JWT, connection
+string with password) against 6 synthetic strings: **6/6 matched**, committed tree **0 matches**.
+
+Note: an earlier scan using `git grep --no-index` reported a positive control of 0/4 — a **broken
+control**, caused by flag ordering, so that result proved nothing and was discarded. The 6/6 plain-`grep`
+control above supersedes it. The role password is generated with `randomBytes` per run and never written
+to a file.
 
 ## 5. Observations and limitations
 
